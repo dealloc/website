@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import BackToHome from "../../components/BackToHome.astro";
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -93,17 +94,7 @@ const description = "Thoughts on software engineering, .NET, Rust, Elixir, and b
 				</div>
 			)}
 
-			<!-- Back to Home -->
-			<div class="mt-16 text-center">
-				<a
-					href="/"
-					class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-				>
-					<span class="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
-						← Back to Home
-					</span>
-				</a>
-			</div>
+			<BackToHome />
 		</div>
 	</main>
 </BaseLayout>

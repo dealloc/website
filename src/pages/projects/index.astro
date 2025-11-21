@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BackToHome from "../../components/BackToHome.astro";
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf(),
+);
+
+const title = "Projects - Wannes Gennar";
+const description = "Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.";
+---
+
+<BaseLayout title={title} description={description}>
+	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
+
+		<div class="max-w-5xl mx-auto">
+			<!-- Header Section -->
+			<div class="mb-16 space-y-6">
+				<h1 class="text-5xl md:text-7xl font-black tracking-tight bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500 bg-clip-text text-transparent animate-gradient drop-shadow-2xl" style="font-family: 'Montserrat', sans-serif; background-size: 200% 200%;">
+					Projects
+				</h1>
+				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
+					Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.
+				</p>
+				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
+					Otherwise known as my graveyard of personal projects
+				</p>
+			</div>
+
+			<!-- Projects Grid -->
+			{projects.length === 0 ? (
+				<div class="text-center py-16">
+					<p class="text-xl text-gray-600 dark:text-gray-400">No projects yet. Check back soon!</p>
+				</div>
+			) : (
+				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+					{projects.map((project) => (
+						<article class="group bg-white dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-xl hover:-translate-y-1">
+							<a href={`/projects/${project.id}`} class="block">
+								{project.data.heroImage && (
+									<div class="aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
+										<img
+											src={project.data.heroImage}
+											alt={project.data.title}
+											class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+										/>
+									</div>
+								)}
+
+								<div class="p-6 space-y-4">
+									<!-- Status and Date -->
+									<div class="flex items-center gap-3 text-sm">
+										<span class={`px-2.5 py-1 rounded-full font-medium ${
+											project.data.status === 'active'
+												? 'bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400'
+												: project.data.status === 'completed'
+												? 'bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
+												: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400'
+										}`}>
+											{project.data.status.charAt(0).toUpperCase() + project.data.status.slice(1)}
+										</span>
+										<span class="text-gray-600 dark:text-gray-400">
+											{project.data.startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
+											{project.data.endDate && ` - ${project.data.endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}`}
+										</span>
+									</div>
+
+									<h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" style="font-family: 'Montserrat', sans-serif;">
+										{project.data.title}
+									</h2>
+
+									{project.data.description && (
+										<p class="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+											{project.data.description}
+										</p>
+									)}
+
+									<!-- Technologies -->
+									{project.data.technologies && project.data.technologies.length > 0 && (
+										<div class="flex flex-wrap gap-2">
+											{project.data.technologies.slice(0, 4).map((tech) => (
+												<span class="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
+													{tech}
+												</span>
+											))}
+											{project.data.technologies.length > 4 && (
+												<span class="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
+													+{project.data.technologies.length - 4}
+												</span>
+											)}
+										</div>
+									)}
+
+									<div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-3 transition-all">
+										View project
+										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+										</svg>
+									</div>
+								</div>
+							</a>
+						</article>
+					))}
+				</div>
+			)}
+
+			<BackToHome />
+		</div>
+	</main>
+</BaseLayout>
