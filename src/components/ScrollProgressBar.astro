@@ -1,0 +1,46 @@
+---
+
+---
+
+<!-- Reading Progress Bar -->
+<div class="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 z-50">
+	<div id="reading-progress" class="h-full bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 transition-all duration-150 ease-out" style="width: 0%"></div>
+</div>
+
+<script>
+	let article: HTMLElement | null = null;
+	let progressBar: HTMLElement | null = null;
+
+	// Reading progress indicator
+	function updateReadingProgress() {
+		if (article === null)
+			article = document.querySelector('article');
+		if (progressBar === null)
+			progressBar = document.getElementById('reading-progress');
+
+		if (!article || !progressBar) return;
+
+		const articleTop = article.offsetTop;
+		const articleHeight = article.offsetHeight;
+		const windowHeight = window.innerHeight;
+		const scrollTop = window.scrollY;
+
+		// Calculate how far through the article we are
+		const articleStart = articleTop;
+		const articleEnd = articleTop + articleHeight - windowHeight;
+		const scrollProgress = scrollTop - articleStart;
+		const scrollRange = articleEnd - articleStart;
+
+		// Convert to percentage (0-100)
+		let percentage = (scrollProgress / scrollRange) * 100;
+		percentage = Math.max(0, Math.min(100, percentage));
+
+		requestAnimationFrame(() => progressBar.style.width = `${percentage}%`);
+	}
+
+	// Update on scroll
+	window.addEventListener('scroll', updateReadingProgress);
+
+	// Update on load
+	updateReadingProgress();
+</script>

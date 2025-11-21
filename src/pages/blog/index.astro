@@ -1,14 +1,109 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+// Render each post to get reading time from remarkPluginFrontmatter
+const postsWithReadingTime = await Promise.all(
+	posts.map(async (post) => {
+		const { remarkPluginFrontmatter } = await render(post);
+		return { ...post, minutesRead: remarkPluginFrontmatter?.minutesRead };
+	})
+);
+
+const title = "Blog - Wannes Gennar";
+const description = "Thoughts on software engineering, .NET, Rust, Elixir, and building scalable systems.";
 ---
-<pre>{JSON.stringify(posts, null, 2)}</pre>
+
+<BaseLayout title={title} description={description}>
+	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
+
+		<div class="max-w-5xl mx-auto">
+			<!-- Header Section -->
+			<div class="mb-16 space-y-6">
+				<h1 class="text-5xl md:text-7xl font-black tracking-tight bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500 bg-clip-text text-transparent animate-gradient drop-shadow-2xl" style="font-family: 'Montserrat', sans-serif; background-size: 200% 200%;">
+					Blog
+				</h1>
+				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
+					Thoughts on software engineering, .NET, Rust, Elixir, and building scalable systems.
+				</p>
+			</div>
+
+			<!-- Blog Posts Grid -->
+			{postsWithReadingTime.length === 0 ? (
+				<div class="text-center py-16">
+					<p class="text-xl text-gray-600 dark:text-gray-400">No blog posts yet. Check back soon!</p>
+				</div>
+			) : (
+				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+					{postsWithReadingTime.map((post) => (
+						<article class="group bg-white dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-xl hover:-translate-y-1">
+							<a href={`/blog/${post.id}`} class="block">
+								{post.data.heroImage && (
+									<div class="aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
+										<img
+											src={post.data.heroImage}
+											alt={post.data.title}
+											class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+										/>
+									</div>
+								)}
+
+								<div class="p-6 space-y-4">
+									<div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+										<FormattedDate date={post.data.pubDate} />
+										{post.data.updatedDate && (
+											<>
+												<span>•</span>
+												<span>Updated</span>
+											</>
+										)}
+										{post.minutesRead && (
+											<>
+												<span>•</span>
+												<span>{post.minutesRead}</span>
+											</>
+										)}
+									</div>
+
+									<h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" style="font-family: 'Montserrat', sans-serif;">
+										{post.data.title}
+									</h2>
+
+									{post.data.description && (
+										<p class="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+											{post.data.description}
+										</p>
+									)}
+
+									<div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-3 transition-all">
+										Read more
+										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+										</svg>
+									</div>
+								</div>
+							</a>
+						</article>
+					))}
+				</div>
+			)}
+
+			<!-- Back to Home -->
+			<div class="mt-16 text-center">
+				<a
+					href="/"
+					class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
+				>
+					<span class="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
+						← Back to Home
+					</span>
+				</a>
+			</div>
+		</div>
+	</main>
+</BaseLayout>

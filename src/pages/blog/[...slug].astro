@@ -1,5 +1,8 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import ScrollProgressBar from '../../components/ScrollProgressBar.astro';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -11,7 +14,109 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, remarkPluginFrontmatter } = await render(post);
+
+const { title, description, pubDate, updatedDate, heroImage } = post.data;
 ---
 
-<pre>{JSON.stringify({ post, Content }, null, 2)}</pre>
+<BaseLayout title={title} description={description} image={heroImage}>
+	<ScrollProgressBar />
+
+	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
+
+		<article class="max-w-4xl mx-auto">
+			<!-- Back link -->
+			<div class="mb-8">
+				<a
+					href="/blog"
+					class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+					</svg>
+					Back to Blog
+				</a>
+			</div>
+
+			<!-- Hero Image (if present) -->
+			{heroImage && (
+				<div class="mb-8 rounded-xl overflow-hidden">
+					<img src={heroImage} alt={title} class="w-full h-auto" />
+				</div>
+			)}
+
+			<!-- Article Header -->
+			<header class="mb-16 space-y-6">
+				<h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-100 dark:via-gray-200 dark:to-gray-100 bg-clip-text text-transparent" style="font-family: 'Montserrat', sans-serif;">
+					{title}
+				</h1>
+
+				{description && (
+					<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
+						{description}
+					</p>
+				)}
+
+				<div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-500 border-l-4 border-blue-500 pl-4">
+					<FormattedDate date={pubDate} />
+					{updatedDate && (
+						<>
+							<span>•</span>
+							<div>
+								Updated <FormattedDate date={updatedDate} />
+							</div>
+						</>
+					)}
+					{remarkPluginFrontmatter?.minutesRead && (
+						<>
+							<span>•</span>
+							<span>{remarkPluginFrontmatter.minutesRead}</span>
+						</>
+					)}
+				</div>
+			</header>
+
+			<!-- Article Content -->
+			<div class="prose prose-lg prose-gray dark:prose-invert max-w-none
+				prose-headings:font-bold prose-headings:tracking-tight prose-headings:font-['Montserrat']
+				prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12
+				prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-12 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200 dark:prose-h2:border-gray-800
+				prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-8
+				prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-6 prose-h4:font-semibold prose-h4:text-gray-800 dark:prose-h4:text-gray-200
+				prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-4 prose-h5:font-semibold prose-h5:text-gray-700 dark:prose-h5:text-gray-300
+				prose-h6:text-base prose-h6:mb-2 prose-h6:mt-4 prose-h6:font-semibold prose-h6:text-gray-700 dark:prose-h6:text-gray-300
+				prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-lg prose-p:mb-6
+				prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline prose-a:border-b prose-a:border-blue-300 dark:prose-a:border-blue-600 hover:prose-a:text-purple-600 dark:hover:prose-a:text-purple-400 hover:prose-a:border-purple-300 dark:hover:prose-a:border-purple-600 prose-a:font-semibold prose-a:transition-colors
+				prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-strong:font-bold
+				prose-em:text-gray-700 dark:prose-em:text-gray-300
+				prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-base prose-code:before:content-none prose-code:after:content-none prose-code:font-normal
+				prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950 prose-pre:border prose-pre:border-gray-800 dark:prose-pre:border-gray-700 prose-pre:rounded-lg prose-pre:my-8 prose-pre:shadow-lg prose-pre:p-6
+				prose-pre>code:text-gray-100 prose-pre>code:bg-transparent prose-pre>code:p-0
+				prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-950/20 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r prose-blockquote:not-italic prose-blockquote:my-8
+				prose-blockquote>p:text-gray-700 dark:prose-blockquote>p:text-gray-300 prose-blockquote>p:my-2
+				prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6
+				prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6
+				prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:text-lg prose-li:pl-2
+				prose-img:rounded-xl prose-img:shadow-xl prose-img:my-8
+				prose-hr:border-gray-300 dark:prose-hr:border-gray-700 prose-hr:my-12
+				prose-table:border-collapse prose-table:border prose-table:border-gray-300 dark:prose-table:border-gray-700 prose-table:rounded-lg prose-table:overflow-hidden prose-table:my-8
+				prose-th:bg-gray-100 dark:prose-th:bg-gray-900 prose-th:border prose-th:border-gray-300 dark:prose-th:border-gray-700 prose-th:px-4 prose-th:py-3 prose-th:font-bold prose-th:text-left
+				prose-td:border prose-td:border-gray-300 dark:prose-td:border-gray-700 prose-td:px-4 prose-td:py-3
+			">
+				<Content />
+			</div>
+
+			<!-- Back to top / Blog link -->
+			<footer class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
+				<a
+					href="/blog"
+					class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
+				>
+					<span class="bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent">
+						← Back to All Posts
+					</span>
+				</a>
+			</footer>
+		</article>
+	</main>
+</BaseLayout>
