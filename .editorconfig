@@ -1,0 +1,33 @@
+# EditorConfig for Meshum Astro site
+# http://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = tab
+indent_size = tab
+tab_width = 4
+max_line_length = 120
+
+# Keep trailing whitespace in Markdown/MDX for intentional formatting (tables, code blocks)
+[*.{md,mdx}]
+trim_trailing_whitespace = false
+
+# Astro files often mix markup and frontmatter — use tabs consistently
+[*.astro]
+indent_style = tab
+indent_size = tab
+
+# Config / lock files (human-readable) — use tabs to match project convention
+[*.{json,jsonc,yml,yaml,toml}]
+indent_style = tab
+indent_size = tab
+
+# Shell scripts and Makefiles
+[*.{sh,Makefile}]
+indent_style = tab
+trim_trailing_whitespace = false
