@@ -32,9 +32,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                 href={new URL('rss.xml', Astro.site)}
         />
 
+		<!-- Prefetch commonly visited pages -->
+		<link rel="prefetch" href={new URL('/', Astro.site)} />
+		<link rel="prefetch" href={new URL('/about', Astro.site)} />
+		<link rel="prefetch" href={new URL('/blogs', Astro.site)} />
+		<link rel="prefetch" href={new URL('/projects', Astro.site)} />
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+
         <!-- Google Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
         <link
                 href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"
                 rel="stylesheet"
