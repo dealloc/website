@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import BackToHome from "../components/BackToHome.astro";
 
 const title = "About - Wannes Gennar";
 const description = "Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies. Founder of Elixus, creator of Meshum.";
@@ -59,7 +60,7 @@ const description = "Full-stack .NET engineer with expertise in Rust, Elixir, an
                 <!-- Current Work -->
                 <section class="space-y-6">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100" style="font-family: 'Montserrat', sans-serif;">
-                        What I'm Building
+                        Here's my current hyperfixation
                     </h2>
                     <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-8 border border-gray-200 dark:border-gray-800 space-y-4">
                         <div class="flex items-center gap-3">
@@ -67,16 +68,16 @@ const description = "Full-stack .NET engineer with expertise in Rust, Elixir, an
                             <span class="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm rounded-lg font-semibold">Featured</span>
                         </div>
                         <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                            A unified knowledge layer where teams keep using their tools—everything becomes searchable through AI agents.
-                            Built with .NET, TypeScript, PostgreSQL, and Redis, Meshum transforms how software teams access and share knowledge.
-                        </p>
+							A unified knowledge layer where every team keeps using the tools they already have—but everything
+							becomes searchable and actionable through AI agents.
+						</p>
                         <a
-                            href="https://meshum.elixus.be"
+                            href="/projects/meshum"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
                         >
-                            Visit Meshum
+                            Read about it!
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
@@ -116,5 +117,7 @@ const description = "Full-stack .NET engineer with expertise in Rust, Elixir, an
                 </section>
             </div>
         </div>
+
+		<BackToHome />
     </main>
 </BaseLayout>
