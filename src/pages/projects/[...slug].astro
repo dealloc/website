@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Prose from "../../components/Prose.astro";
+import ScrollProgressBar from "../../components/ScrollProgressBar.astro";
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -20,6 +21,7 @@ const { title, description, startDate, endDate, status, technologies, heroImage,
 
 <BaseLayout title={title} description={description} image={heroImage}>
 	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
+		<ScrollProgressBar />
 
 		<article class="max-w-4xl mx-auto">
 			<!-- Back link -->
