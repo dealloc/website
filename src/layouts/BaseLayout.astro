@@ -61,7 +61,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <meta property="twitter:image" content={new URL(image, Astro.url)}/>
         <Tracking/>
     </head>
-    <body class="min-h-screen flex flex-col">
+    <body class="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
         <slot/>
     </body>
 </html>
