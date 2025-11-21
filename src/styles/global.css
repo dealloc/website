@@ -24,3 +24,44 @@
 .animate-gradient {
   animation: gradient 8s ease infinite;
 }
+
+/* View Transition API customization */
+@view-transition {
+  navigation: auto;
+}
+
+/* Customize the default cross-fade animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
+
+::view-transition-old(root) {
+  animation: slide-out 0.3s ease-in;
+}
+
+::view-transition-new(root) {
+  animation: slide-in 0.3s ease-out;
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
