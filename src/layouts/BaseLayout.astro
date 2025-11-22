@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Tracking from "../components/Tracking.astro";
+import CookieBanner from "../components/CookieBanner.astro";
 
 interface Props {
     title?: string;
@@ -75,5 +76,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 			<div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
 			<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-3xl"></div>
 		</div>
+		<CookieBanner />
     </body>
 </html>

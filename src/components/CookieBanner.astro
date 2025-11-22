@@ -1,0 +1,170 @@
+---
+---
+
+<div id="cookie-banner" class="cookie-banner hidden">
+	<div class="cookie-banner-content">
+		<div class="cookie-banner-inner">
+			<!-- Gradient background -->
+			<div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 rounded-2xl"></div>
+			<div class="absolute inset-0 border border-gray-200 dark:border-gray-700 rounded-2xl"></div>
+
+			<div class="relative flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
+				<div class="flex-1">
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">We value your privacy</h3>
+					<p class="text-sm text-gray-600 dark:text-gray-400">
+						Hey! I use analytics on this website to see what visitors enjoy. By continuing to use
+						this website you consent to analytics tracking. I only use this to generate insights
+						about content, nothing more!
+						<a href="/privacy" class="text-blue-600 dark:text-blue-400 hover:underline">
+							Read the privacy policy
+						</a>
+					</p>
+				</div>
+				<div class="flex gap-3 shrink-0">
+					<button id="cookie-decline" class="btn-secondary whitespace-nowrap px-6 py-2 rounded-lg font-medium transition-colors">
+						Decline
+					</button>
+					<button id="cookie-accept" class="btn-primary whitespace-nowrap px-6 py-2 rounded-lg font-medium">
+						Accept
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.cookie-banner {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		padding: 1rem;
+		animation: slideUp 0.3s ease-out;
+	}
+
+	.cookie-banner.hidden {
+		display: none;
+	}
+
+	.cookie-banner-content {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.cookie-banner-inner {
+		position: relative;
+		padding: 1.5rem;
+		backdrop-filter: blur(12px);
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: 1rem;
+		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.cookie-banner-inner {
+			background: rgba(17, 24, 39, 0.95);
+			box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+		}
+	}
+
+	.btn-primary {
+		background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+		color: white;
+		border: none;
+	}
+
+	.btn-primary:hover {
+		opacity: 0.9;
+	}
+
+	.btn-secondary {
+		background: transparent;
+		border: 1px solid rgba(156, 163, 175, 0.3);
+		color: rgb(75, 85, 99);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.btn-secondary {
+			border-color: rgba(156, 163, 175, 0.2);
+			color: rgb(209, 213, 219);
+		}
+	}
+
+	.btn-secondary:hover {
+		background: rgba(156, 163, 175, 0.1);
+	}
+
+	@keyframes slideUp {
+		from {
+			transform: translateY(100%);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.cookie-banner-inner {
+			padding: 1rem;
+		}
+	}
+</style>
+
+<script>
+	// Check if user has already made a choice
+	const CONSENT_KEY = 'cookie-consent';
+
+	function getCookieConsent() {
+		return localStorage.getItem(CONSENT_KEY);
+	}
+
+	function setCookieConsent(value: 'accepted' | 'declined') {
+		localStorage.setItem(CONSENT_KEY, value);
+		window.dispatchEvent(new CustomEvent('cookieConsentChange', { detail: { consent: value } }));
+	}
+
+	function showBanner() {
+		const banner = document.getElementById('cookie-banner');
+		if (banner) {
+			banner.classList.remove('hidden');
+		}
+	}
+
+	function hideBanner() {
+		const banner = document.getElementById('cookie-banner');
+		if (banner) {
+			banner.classList.add('hidden');
+		}
+	}
+
+	// Show banner if no consent has been given
+	const consent = getCookieConsent();
+	if (!consent) {
+		showBanner();
+	}
+
+	// Handle accept button
+	const acceptBtn = document.getElementById('cookie-accept');
+	acceptBtn?.addEventListener('click', () => {
+		setCookieConsent('accepted');
+		hideBanner();
+		// Reload to activate tracking scripts
+		window.location.reload();
+	});
+
+	// Handle decline button
+	const declineBtn = document.getElementById('cookie-decline');
+	declineBtn?.addEventListener('click', () => {
+		setCookieConsent('declined');
+		hideBanner();
+	});
+
+	// Export function for other scripts to check consent
+	(window as any).hasAnalyticsConsent = function() {
+		return getCookieConsent() === 'accepted';
+	};
+</script>
