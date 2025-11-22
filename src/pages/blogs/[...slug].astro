@@ -74,6 +74,15 @@ const { title, description, pubDate, updatedDate, heroImage } = post.data;
 							<span>{remarkPluginFrontmatter.minutesRead}</span>
 						</>
 					)}
+					<span>•</span>
+					<a
+						href={`https://github.com/dealloc/website/issues/new?title=${encodeURIComponent(`Typo in "${title}"`)}&body=${encodeURIComponent(`I found a typo in the blog post:\n\n**Post:** ${title}\n**URL:** ${Astro.url.href}\n\n**Description:**\n<!-- Please describe the typo here -->`)}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-gray-500 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+					>
+						Spotted a typo?
+					</a>
 				</div>
 			</header>
 
