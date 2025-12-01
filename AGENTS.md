@@ -28,7 +28,7 @@
 ### Brand Positioning
 - **Who:** Wannes Gennar - Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies
 - **Company:** Elixus (https://www.elixus.be)
-- **Product:** Meshum (https://meshum.elixus.be) - Unified knowledge layer for teams
+- **Product:** Meshum (https://www.meshum.dev) - Unified knowledge layer for teams
 - **Value Proposition:** Technical expertise, thought leadership, innovative solutions
 
 ### Primary Goals
@@ -483,7 +483,7 @@ name: Meshum
 description: Unified knowledge layer where teams keep using their tools—everything becomes searchable through AI agents
 heroImage: /images/meshum-hero.png
 techStack: [".NET", "TypeScript", "PostgreSQL", "Redis", "OpenAI"]
-link: https://meshum.elixus.be
+link: https://www.meshum.dev
 featured: true
 order: 1
 ---
@@ -1273,7 +1273,7 @@ a:hover {
 ## 📚 Reference Links
 
 ### Design Inspiration
-- Meshum website: https://meshum.elixus.be
+- Meshum website: https://www.meshum.dev
 - Clean, technical blogs for reference
 - Modern portfolio sites
 
@@ -1428,7 +1428,7 @@ Founder, Elixus
 Creator, Meshum
 
 - Company: https://www.elixus.be
-- Product: https://meshum.elixus.be
+- Product: https://www.meshum.dev
 
 ---
 

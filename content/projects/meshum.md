@@ -85,7 +85,7 @@ Basically, if you've ever been in a meeting that shouldn't have happened because
 
 ---
 
-**Check it out**: [meshum.elixus.be](https://meshum.elixus.be)
+**Check it out**: [www.meshum.dev](https://www.meshum.dev)
 
 Early stage, but if you're interested in joining the waitlist or want to talk about what you're struggling with: they're listening.
 
