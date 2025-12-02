@@ -1,0 +1,169 @@
+---
+title: 'Writing custom Aspire integrations'
+description: 'No official integration for your favourite service? No problem!'
+pubDate: 2025-12-02
+---
+import { Image } from 'astro:assets';
+
+Aspire comes with a **lot** of integrations out of the box ([140](https://aspire.dev/integrations/gallery/) at the time of writing!)
+but sometimes you need one that doesn't exist. Rather than hoping someone else has the same need, let's take a look
+at how building our own integration works.
+
+Just looking for the code and don't care for the theory? Skip to [the code](#writing-our-own-integration---permify)!
+
+## Understanding the building blocks
+
+Aspire's foundation consists of two key types: `IResource` and `IResourceAnnotation`. These define
+your application's model as a [directed acyclic graph (DAG)](https://aspire.dev/architecture/resource-model/), where
+`IResource` instances represent services, infrastructure elements, or supporting components that together compose a distributed system.
+
+Annotations (`IResourceAnnotation`) allow attaching additional structured information to a resource without modifying its core class.
+They're the primary extensibility mechanism in Aspire, enabling:
+- Core system behaviors (e.g., service discovery, connection strings, health probes)
+- Custom extensions and third-party integrations
+- Layering of optional capabilities without inheritance or tight coupling
+
+## Case study: MinIO integration
+
+Let's examine how the [CommunityToolkit](https://github.com/CommunityToolkit/Aspire) handles integrations by looking at their
+[MinIO](https://www.min.io/) integration (an S3-compatible storage service).
+
+A typical Aspire integration consists of three main components:
+
+### 1. The Resource type
+
+The resource type represents your service in Aspire's application model. For MinIO, this means creating a class that:
+- Extends `ContainerResource` (since MinIO runs as a container)
+- Implements `IResourceWithConnectionString` to generate connection strings
+- Defines endpoints that other resources can reference
+- Uses `ReferenceExpression` to create connection string templates that Aspire resolves at runtime
+
+The key insight here is that the resource isn't just data - it's a live reference that gets resolved when your application starts.
+
+### 2. Builder extensions
+
+These are the extension methods you call in your AppHost project, like `builder.AddMinio("minio")`. They:
+- Create instances of your resource type
+- Configure container settings (image, ports, environment variables)
+- Handle parameters like credentials with sensible defaults
+- Return an `IResourceBuilder<T>` so you can chain additional configuration
+
+Following Aspire's builder pattern ensures your integration feels natural alongside official integrations.
+
+### 3. Client integration
+
+This is what consuming services use to connect to your resource. The client integration:
+- Reads from Aspire's standard configuration paths
+- Retrieves connection strings by name
+- Configures the actual client SDK (in this case, the MinIO .NET client)
+- Allows additional customization through callbacks
+
+The end result is that in your API project, you just call `builder.AddMinioClient("minio")` and everything wires up automatically.
+
+## What this looks like in practice
+
+With these pieces in place, using the integration is straightforward:
+
+```csharp
+// AppHost
+var minio = builder.AddMinio("minio");
+
+builder.AddProject<Projects.MyApi>("api")
+    .WithReference(minio);
+```
+
+```csharp
+// API project
+builder.AddMinioClient("minio");
+// MinIO client is now available via DI
+```
+
+Aspire handles service discovery, connection string management, configuration injection, and container lifecycle - you just declare what you need.
+
+## Writing our own integration - Permify
+
+While looking for an authorization service for my current side project (shameless plug: [meshum.dev](https://meshum.dev)),
+I came across [Permify](https://permify.co/), which is inspired by Google's [Zanzibar](https://permify.co/post/google-zanzibar-in-a-nutshell/).
+
+Looking at their documentation, running a development Permify server is as simple as:
+
+```bash
+docker run -p 3476:3476 -p 3478:3478  ghcr.io/permify/permify serve
+# Or, if you're using Podman like me
+podman run -p 3476:3476 -p 3478:3478  ghcr.io/permify/permify serve
+```
+
+Modeling this in Aspire's resource model is easy enough, we just throw in an `.AddContainer`:
+
+```csharp
+var permify = builder.AddContainer("permify", "permify/permify")
+	.WithImageTag("latest") // Or pin to a specific version
+	.WithImageRegistry("ghcr.io");
+```
+
+Reading on from Permify's documentation, they tell us that the above will start Permify with the following:
+- Port `3476` is used to serve the REST API.
+- Port `3478` is used to serve the GRPC Service.
+- Authorization data stored in memory.
+
+To be able to access these ports (both ourselves and other services), we need to tell Aspire about them:
+```csharp
+permify
+	.WithHttpEndpoint(targetPort: 3476, name: "http") // `http` is the default name, so this could be omitted
+	.WithHttpEndpoint(targetPort: 3478, name: "grpc");
+```
+
+Permify also has health checks, which means we can tell Aspire how to check if it's ready (or if it crashed), which in turn
+will allow us to do things like `.WaitFor(permify)` since that means "wait until health checks pass". According to their
+documentation their health checks run at `<http-endpoint>/healthz`, so let's tell Aspire to use them:
+
+```csharp
+permify.WithHttpHealthCheck("/healthz");
+```
+
+Unfortunately, every time we restart Aspire we'll lose everything as Permify is currently holding everything in memory.
+Let's see about adding a Postgres database to our Permify instance, which already supports persistent data volumes so we
+keep our database between runs.
+
+[Permify's documentation](https://docs.permify.co/setting-up/configuration#definition-6) tells us that we can configure
+a Postgres database by setting the `PERMIFY_DATABASE_ENGINE` and `PERMIFY_DATABASE_URI` variables:
+
+```csharp
+var permifyDb = builder.AddPostgres("database")
+	.WithDataVolume() // Persists database state between runs
+	.AddDatabase("permify-db");
+
+permify
+	.WithEnvironment("PERMIFY_DATABASE_ENGINE", "postgres")
+	.WithEnvironment("PERMIFY_DATABASE_URI", permifyDb.Resource.UriExpression);
+```
+
+The key here is `permifyDb.Resource.UriExpression`, which is of type `ReferenceExpression` - this is how Aspire
+templates values that get resolved at runtime (in this case a template like `postgresql://{user}:{password}@{host}:{port}/{database}`).
+
+Let's put the whole thing together:
+
+```csharp
+var builder = DistributedApplication.CreateBuilder(args);
+
+var database = builder.AddPostgres("database")
+    .WithDataVolume();
+
+var permifyDb = database.AddDatabase("permify-db");
+var permify = builder.AddContainer("permify", "permify/permify")
+	.WithImageTag("latest")
+	.WithImageRegistry("ghcr.io")
+    .WithHttpEndpoint(targetPort: 3476, name: "http")
+    .WithHttpEndpoint(targetPort: 3478, name: "grpc")
+    .WithHttpHealthCheck("/healthz")
+    .WithEnvironment("PERMIFY_DATABASE_ENGINE", "postgres")
+    .WithEnvironment("PERMIFY_DATABASE_URI", permifyDb.Resource.UriExpression)
+    .WaitFor(permifyDb);
+```
+
+Permify also has support for OTLP (which is what Aspire uses for its metrics & traces), but I haven't fully figured out
+an idiomatic way to have it send those to Aspire (I'm getting close though, currently investigating `HostUri`).
+
+I hope that this helps you figure out writing your own integrations next time you find yourself needing a service that
+Aspire doesn't provide out of the box. As for Permify, I'm hoping to create a PR to the CommunityToolkit so that the above
+is integrated and you don't need to write this yourself 😊
