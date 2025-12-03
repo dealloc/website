@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Tracking from "../components/Tracking.astro";
 import CookieBanner from "../components/CookieBanner.astro";
 import FallbackImage from '../../public/wannes.jpg';
+import ClientRouter from 'astro/components/ClientRouter.astro';
 
 interface Props {
     title?: string;
@@ -70,6 +71,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <meta property="twitter:description" content={description}/>
         <meta property="twitter:image" content={new URL(image.src, Astro.url)}/>
         <Tracking/>
+		<ClientRouter />
     </head>
     <body class="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors overflow-x-hidden">
         <slot/>
