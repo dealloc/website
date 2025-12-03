@@ -2,18 +2,20 @@
 import '../styles/global.css';
 import Tracking from "../components/Tracking.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import FallbackImage from '../../public/wannes.jpg';
 
 interface Props {
     title?: string;
     description?: string;
-    image?: string;
+    image?: ImageMetadata;
 }
 
 const {
     title,
     description = '',
-    image = '/wannes.jpg'
+    image = FallbackImage,
 } = Astro.props;
+
 const pageTitle = title || 'Wannes';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -59,14 +61,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <meta property="og:url" content={Astro.url}/>
         <meta property="og:title" content={pageTitle}/>
         <meta property="og:description" content={description}/>
-        <meta property="og:image" content={new URL(image, Astro.url)}/>
+        <meta property="og:image" content={new URL(image.src, Astro.url)}/>
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image"/>
         <meta property="twitter:url" content={Astro.url}/>
         <meta property="twitter:title" content={pageTitle}/>
         <meta property="twitter:description" content={description}/>
-        <meta property="twitter:image" content={new URL(image, Astro.url)}/>
+        <meta property="twitter:image" content={new URL(image.src, Astro.url)}/>
         <Tracking/>
     </head>
     <body class="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors overflow-x-hidden">
