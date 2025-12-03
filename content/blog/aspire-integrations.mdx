@@ -1,15 +1,22 @@
 ---
 title: 'Writing custom Aspire integrations'
 description: 'No official integration for your favourite service? No problem!'
-pubDate: 2025-12-02
+pubDate: 2025-12-03
 ---
 import { Image } from 'astro:assets';
 
-Aspire comes with a **lot** of integrations out of the box ([140](https://aspire.dev/integrations/gallery/) at the time of writing!)
-but sometimes you need one that doesn't exist. Rather than hoping someone else has the same need, let's take a look
-at how building our own integration works.
-
 Just looking for the code and don't care for the theory? Skip to [the code](#writing-our-own-integration---permify)!
+
+Aspire comes with a **lot** of integrations out of the box ([140](https://aspire.dev/integrations/gallery/) at the time of writing!)
+but sometimes you need one that doesn't exist, and this week I ended up opening my (first) PR to the
+[Aspire CommunityToolkit](https://github.com/CommunityToolkit/Aspire) which is where 3rd party integrations with Aspire live.
+My [pull request](https://github.com/CommunityToolkit/Aspire/pull/1021) adds integration for [Zitadel](https://zitadel.com)
+which is an OpenId Connect compatible identity service with some very interesting free options and self-hosting
+(I'm still salty about IdentityServer).
+
+While I was waiting for my PR to merge I already got started on writing my second integration for [Permify](https://permify.co/),
+more on that when we get into the code. Let's first take a look at how Aspire handles it's integrations under the hood and
+then how we can write our own.
 
 ## Understanding the building blocks
 
