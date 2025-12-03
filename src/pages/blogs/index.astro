@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import BackToHome from "../../components/BackToHome.astro";
@@ -44,16 +45,6 @@ const description = "Thoughts on software engineering, .NET, Rust, Elixir, and b
 					{postsWithReadingTime.map((post) => (
 						<article class="group bg-white dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-xl hover:-translate-y-1">
 							<a href={`/blogs/${post.id}`} class="block">
-								{post.data.heroImage && (
-									<div class="aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
-										<img
-											src={post.data.heroImage}
-											alt={post.data.title}
-											class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-										/>
-									</div>
-								)}
-
 								<div class="p-6 space-y-4">
 									<div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
 										<FormattedDate date={post.data.pubDate} />
