@@ -6,6 +6,7 @@ status: active
 technologies: ['C#', '.NET 10', 'Native AOT', 'Source Generators', 'REST API', 'OpenAPI', 'Docker', 'Alpine Linux']
 githubUrl: 'https://github.com/helldivers-2/api'
 liveUrl: 'https://api.helldivers2.dev'
+sponsorUrl: 'https://github.com/sponsors/dealloc'
 ---
 
 # Building a Community API for Helldivers 2: Learning to Thrive Under Extreme Constraints

@@ -5,6 +5,7 @@ startDate: 2022-12-25
 status: completed
 technologies: ['Flutter', 'Dart']
 githubUrl: 'https://github.com/dealloc/icarus_editor'
+sponsorUrl: 'https://github.com/sponsors/dealloc'
 ---
 
 # When a Game's Grind Gets Too Real: Building Icarus Editor

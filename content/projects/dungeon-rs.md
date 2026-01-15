@@ -5,6 +5,7 @@ startDate: 2024-04-26
 status: active
 technologies: ['Rust', 'Bevy 0.17', 'egui', 'Fluent', 'ECS', 'Cross-platform']
 githubUrl: 'https://github.com/dungeon-rs/dungeon-rs'
+sponsorUrl: 'https://github.com/sponsors/dealloc'
 ---
 
 # DungeonRS: Building a Map Editor and Actually Maintaining It

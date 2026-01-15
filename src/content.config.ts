@@ -31,6 +31,7 @@ const projects = defineCollection({
             heroImage: image().optional(),
             githubUrl: z.string().url().optional(),
             liveUrl: z.string().url().optional(),
+            sponsorUrl: z.string().url().optional(),
         }),
 });
 
