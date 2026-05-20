@@ -3,3 +3,231 @@ title: 'AI powered migrations'
 description: 'A write-up of using Claude to migrate endpoints from a legacy API to a modern API'
 pubDate: 2026-05-20
 ---
+
+This week I had the opportunity to run a proof of concept at a client: could we use Claude to build a workflow
+that migrates endpoints from a legacy API (think .NET Framework 4.7 + ServiceStack) to a modern .NET 10 API?
+
+The full migration had been estimated at around **70 days** of work. After a day and a half of PoC work,
+we estimated we could get it done in **10**.
+
+Having recently been [CCA-F certified](/about), this was an excellent opportunity to put lessons learned to the
+test — and see if scoring well on a theoretical exam translated to practical skills.
+
+---
+
+## Setting the stage
+
+Before writing a single line of the skill, we spent half a day getting the legacy codebase running locally.
+Fortunately there was still some institutional knowledge about it in-house — not everyone has that advantage with
+legacy software, and it makes a significant difference.
+
+Two constraints shaped everything that followed:
+
+- About two years ago, a chunk of the API was already ported to .NET 8 (login, database infrastructure, cache connections). That was our target codebase.
+- We wanted to port endpoints **as-is** — copy over the bad decisions, the quirks, the code smells — as long as they didn't actively break on .NET 10. The goal was a working migration, not a refactor.
+
+---
+
+## Building the skill
+
+Once we had both codebases running, we asked Claude to interview us about the migration. We told it we wanted
+to build a skill to port endpoints from the old API to the new one, and spent about half a day being grilled
+(shoutout to Matt Pocock's
+[grill-me](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) skill!) —
+explaining the nuances of the old codebase, providing examples of what old code should look like in the new
+one, and mapping out the important patterns to recognise. For example: the old codebase had a facade layer
+that was functionally equivalent to the service layer in the new one. That kind of thing isn't obvious from
+reading the code cold.
+
+The result was a skill called `/port-endpoint`, structured roughly like this:
+
+```markdown
+---
+name: port-endpoint
+description: Automatically port a single endpoint from the legacy API to the new API.
+context: fork
+model: sonnet
+allowed_tools:
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
+  - PowerShell(dotnet build*)
+  - PowerShell(dotnet format*)
+---
+
+## Step 1 — Read the old code
+## Step 2 — Pre-flight checks (avoid overwriting already-ported code)
+## Step 3 — Generate code (write all files without pausing for review)
+## Step 4 — Format and build (dotnet format, then dotnet build, fix errors)
+## Step 5 — Present a structured summary
+```
+
+---
+
+## The calibration phase
+
+Here's the thing nobody tells you about this kind of workflow: the first few endpoints aren't migrations —
+they're the calibration. Each one taught us something we hadn't anticipated, and we immediately folded those
+lessons back into the skill. By endpoint four or five the workflow was stable. By endpoint ten it felt routine.
+
+**Endpoint 1: the faithfulness problem**
+
+The first endpoint had a few raw SQL queries. Claude, being helpful, translated them to EF Core LINQ — cleaner
+code, more idiomatic for the new stack. The problem was that some of those queries used MySQL-specific ordering
+constructs and functions (`FIND_IN_SET`, `GROUP_CONCAT`, `CONVERT(col, SIGNED)`) that don't have a guaranteed
+1:1 equivalent in EF Core-generated SQL. A translation that *looks* correct can behave subtly differently at
+runtime.
+
+We had to pull Claude back toward faithfulness. The rule we eventually encoded in the skill was precise:
+
+> If the old query uses raw SQL (`Db.Query<T>`, `Db.SqlScalar<T>`) rather than LINQ methods, read the full SQL
+> and check for MySQL-specific syntax. If any is present, mark it as **raw SQL — must use `FromSqlInterpolated`**.
+> Do not attempt a LINQ translation; semantic equivalence cannot be guaranteed.
+
+Simple queries with provably equivalent behaviour could be converted. Anything else stayed as raw SQL, using
+EF Core's interpolated methods to keep parameterisation safe — but not touching the SQL itself.
+
+**Endpoint 2: the enum simplification**
+
+The second endpoint had an enum that was cast to `int` in several places throughout the old code. Claude ported
+it as a set of `const int` values instead. Not completely unreasonable — it removed the need for those casts —
+but it was a quiet departure from the original design, and it made the ported code harder to review because you
+couldn't just look for structural differences.
+
+What Claude had actually done was optimise for its own convenience: by dropping the enum, the casting
+disappeared, and the code got simpler. We added an explicit rule: **enums must be ported as enums**, and we added
+a concrete before/after example to our `patterns.md` reference file. The next endpoint got it right.
+
+These two episodes shaped the core philosophy of everything that followed: Claude's instinct is to improve code.
+For this task, that instinct had to be suppressed completely.
+
+---
+
+## Decisions that shaped the workflow
+
+With the calibration phase behind us, a few design choices had proven themselves worth keeping:
+
+**No refactoring — and the unexpected benefits**
+
+Telling Claude to copy bad decisions and code smells as-is sounds wrong. But it came with real advantages.
+The ported code had roughly the same shape as the original, which made review much faster — you were looking
+for structural differences, not semantic ones. Claude also spent less time second-guessing and more time
+actually completing the task.
+
+We used the same wording throughout: *"Port as-is: quirks, ordering, redundant lookups, and all. Behavioural
+equivalence is the only goal."* We did make selective exceptions — raw SQL string concatenation got replaced
+with parameterised queries — but the bar for exceptions was deliberate and high.
+
+**`context: fork` on the skill**
+
+This runs the skill in a separate agent. The exploration and code generation happen without filling the context
+of our main session, which lets us make follow-up adjustments or ask questions without fighting
+[context rot](https://redis.io/blog/context-rot/). Practically speaking, it also means every port starts fresh,
+which turns out to be exactly what you want.
+
+**Limiting the available tools**
+
+Anthropic recommends this, and we found it to be true in practice: fewer tools keeps Claude more on track and
+more efficient. The skill had access to read, write, edit, glob, grep, and two specific `dotnet` commands —
+enough to do the job, nothing more.
+
+**Review checkpoints, used sparingly**
+
+Claude was instructed to keep going for most of the process: write all the files, then present a structured
+summary at the end. We could track progress through the files landing on disk without needing to babysit
+permission prompts the entire way through. Removing us as a constant bottleneck turned out to be one of the
+biggest throughput improvements.
+
+**Format at the end, not along the way**
+
+We told Claude not to worry about formatting or whitespace while writing code. When it was done, it ran
+`dotnet format` across the entire codebase in one pass. Claude has a tendency to fix indentation and alignment
+as it goes — which wastes tokens and time when a formatter can do it better and faster in a single command.
+This is now a pattern I use in my daily workflows.
+
+**Examples over paragraphs**
+
+We built a `patterns.md` file with concrete before/after examples: this is what a controller looks like in the
+old code; here is what we expect it to look like in the new code. We did the same for services, repositories,
+and DTOs. The difference in output quality between a few well-chosen examples and paragraphs of written
+description is not subtle.
+
+---
+
+## The review skill
+
+To accompany `/port-endpoint`, we built a `/review-port` skill. After finishing an endpoint, Claude would
+suggest running the review in a fresh conversation.
+
+The mechanic: the review skill uses git to read the pending changes — similar to a standard code review skill
+— but with specialised instructions for this migration specifically. It knows where to find the old codebase,
+so it can go back and verify behaviour rather than just checking whether the new code looks reasonable in
+isolation. It has explicit rules for the things we'd learned to watch: raw SQL handling, caching levels,
+auth preservation, enum types, DI registrations.
+
+The critical design choice was `context: fork` again: the review agent starts with no memory of the port
+session. It gets genuine fresh eyes, uncontaminated by whatever decisions or assumptions the porting agent had
+accumulated.
+
+This paid off. The review skill caught a subtle bug that Claude had introduced during translation — not ported
+from the original, but created in the process of moving the code across. In a deeply nested code path, a
+null check had been silently dropped. The control flow in the new code looked plausible; the edge case was
+simply gone. That's exactly the kind of thing that slips through human review too, and the review skill caught
+it because it was comparing against the old codebase, not just reading the new code in isolation.
+
+The enum-as-integers issue from endpoint 2 was also caught by the review skill on a later endpoint, which is
+worth noting: even after adding it to the port skill, it surfaced again in a different form. Having an
+independent check that doesn't share context with the port session gave us a genuine second opinion.
+
+---
+
+## The skill as knowledge transfer
+
+One thing this approach gets right that's easy to overlook: the skill *is* the knowledge transfer.
+
+All of the institutional knowledge about the old codebase — the facade-to-service layer mapping, the raw SQL
+rules, the enum patterns, the caching behaviour — lives in the skill and in `patterns.md`. A new engineer
+running `/port-endpoint` on an endpoint they've never seen gets the same quality output as we would. They don't
+need to have sat through the interview or worked on the first few endpoints.
+
+That's a meaningful property. Legacy migrations usually depend heavily on whoever understands the old system.
+This approach encodes that understanding in a reusable artefact.
+
+---
+
+## The rough edges
+
+It wasn't entirely smooth. Claude got stuck in skill invocation loops a few times — not a fundamental problem,
+but it required a restart. Beyond that, the issues we hit were the calibration-phase ones already described:
+caught early, fixed in the skill, didn't recur.
+
+The up-front investment in the interview and the patterns file genuinely seemed to prevent most of the problems
+that might otherwise have appeared mid-run. When Claude had a clear, detailed picture of what "correct" looked
+like, it mostly produced correct output.
+
+---
+
+## Results
+
+In a day and a half, we ported **10 endpoints**. The original estimate for that same scope was **15 days**.
+
+Extrapolating to the full migration — originally estimated at 70 days — we put our own estimate at around
+**10 days** using the workflow we'd built. Whether that holds at scale is something we'll find out if the
+project moves forward; the decision is still pending on the client's side.
+
+---
+
+## What we'd tell someone starting from scratch
+
+Spend the time upfront. The interview phase, the patterns file, the examples — these aren't overhead, they *are*
+the work. The quality of what Claude produces is a direct reflection of how well you've described the problem.
+
+Treat the first few runs as calibration, not production. You will learn things from the first endpoint that you
+couldn't have anticipated before running it. Fold them back in immediately and carry on.
+
+Add constraints deliberately. Fewer tools, no refactoring, format at the end — each one felt like a limitation
+and turned out to be a force multiplier.
+
+And run the review in a separate session. The independent perspective is worth it.
