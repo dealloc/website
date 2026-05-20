@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BackToHome from "../components/BackToHome.astro";
+import ccafCert from "../assets/certifications/cca-f.jpg";
 
 const title = "About - Wannes Gennar";
 const description = "Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies. Founder of Elixus, creator of Meshum.";
@@ -57,6 +58,51 @@ const description = "Full-stack .NET engineer with expertise in Rust, Elixir, an
                     </div>
                 </section>
 
+                <!-- Certifications -->
+                <section class="space-y-6">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100" style="font-family: 'Montserrat', sans-serif;">
+                        Certifications
+                    </h2>
+                    <div class="rounded-xl border border-orange-200 dark:border-orange-900/60 overflow-hidden shadow-lg">
+                        <!-- Orange accent header bar -->
+                        <div class="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400"></div>
+                        <div class="bg-orange-50/60 dark:bg-orange-950/20 p-8">
+                            <div class="flex items-start gap-4">
+                                <a href="https://verify.skilljar.com/c/7zi6t7wnff3u" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 group">
+                                    <div class="w-12 h-12 rounded-xl overflow-hidden border border-orange-200 dark:border-orange-900/60 shadow-md transition-transform group-hover:scale-105 group-hover:shadow-lg">
+                                        <img
+                                            src={ccafCert.src}
+                                            alt="CCA-F certificate"
+                                            class="w-full h-full object-cover"
+                                            width={ccafCert.width}
+                                            height={ccafCert.height}
+                                        />
+                                    </div>
+                                </a>
+                                <div class="flex-1 space-y-2">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-sm font-semibold text-orange-700 dark:text-orange-400">Anthropic</span>
+                                        <span class="px-2.5 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-md font-bold tracking-wide shadow-sm">CCA-F</span>
+                                        <span class="px-2.5 py-0.5 bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-xs rounded-md font-semibold border border-orange-200 dark:border-orange-800">938 / 1000</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Certified Claude Architect – Fundamentals</h3>
+                                    <a
+                                        href="https://verify.skilljar.com/c/7zi6t7wnff3u"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="inline-flex items-center gap-1.5 text-sm text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-semibold transition-colors"
+                                    >
+                                        Verify credential
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Current Work -->
                 <section class="space-y-6">
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100" style="font-family: 'Montserrat', sans-serif;">
@@ -64,24 +110,33 @@ const description = "Full-stack .NET engineer with expertise in Rust, Elixir, an
                     </h2>
                     <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-8 border border-gray-200 dark:border-gray-800 space-y-4">
                         <div class="flex items-center gap-3">
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Meshum</h3>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">FABKIT</h3>
                             <span class="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm rounded-lg font-semibold">Featured</span>
                         </div>
                         <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-							A unified knowledge layer where every team keeps using the tools they already have—but everything
-							becomes searchable and actionable through AI agents.
-						</p>
-                        <a
-                            href="/projects/meshum"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-                        >
-                            Read about it!
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </a>
+                            A community-driven toolbox for Flesh and Blood TCG players. Create custom cards with authentic fonts, symbols, and templates — export them as print-ready PNGs. Installable as a PWA, works entirely in the browser, no account needed.
+                        </p>
+                        <div class="flex gap-3 flex-wrap">
+                            <a
+                                href="https://fabkit.io"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
+                            >
+                                fabkit.io
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                            <a
+                                href="https://github.com/fabkit/fabkit"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
+                            >
+                                <span class="bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-300 dark:to-gray-400 bg-clip-text text-transparent">GitHub</span>
+                            </a>
+                        </div>
                     </div>
                 </section>
 
