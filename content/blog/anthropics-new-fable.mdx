@@ -1,0 +1,199 @@
+---
+title: 'Putting Fable 5 to work: a full Rust CLI in one night'
+description: 'Anthropic dropped Fable 5 and I immediately threw a production-grade Rust project at it. Here is what happened.'
+pubDate: 2026-06-10
+---
+
+import { Image } from 'astro:assets';
+import frontierCode from '../../src/assets/blogs/anthropics-new-fable/frontier-code.webp';
+import tokenTelemetry from '../../src/assets/blogs/anthropics-new-fable/tokentelemetry.png';
+import AsciinemaPlayer from '../../src/components/AsciinemaPlayer.astro';
+
+Anthropic dropped [Fable 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) on the evening of June 9th.
+I'd been working on a side project in Rust for a few weeks, and I wanted to know: could Fable build it faster and better than me?
+So I handed it the spec and let it run.
+
+This is a write-up of my first impressions.
+
+## The project: ufpm
+
+For a few weeks I'd been slowly building [`ufpm`](https://github.com/dealloc/ufpm) - an unofficial CLI package manager for
+[FoundryVTT](https://foundryvtt.com), written in Rust. If you're not familiar with it, FoundryVTT is a self-hosted virtual
+tabletop platform for running tabletop RPGs. It has a built-in package manager, and it has... issues.
+
+The existing package manager downloads the *entire* package index in one giant API call - no pagination, no streaming,
+just a raw `5.5 MB` JSON blob that can take anywhere from 5 to 20 seconds depending on your connection.
+You can't preview what has updates before updating. If an update fails halfway through, it doesn't report what succeeded
+and doesn't offer a rollback. And there is no way to tell whether a module is actually enabled in any of your worlds, so
+cleaning up your install is a guessing game.
+
+I wanted something that behaved like `uv` or `cargo`: fast, transparent, parallelized where possible, transactional where
+it mattered, and resilient against failures.
+
+I'd been writing it in Rust, partly because Rust is the right tool for this kind of low-level filesystem work, partly because
+I wanted to. Over the past few weeks I'd done the research: the FoundryVTT API is undocumented, so I pieced together its
+shape from various sources - request bodies, auth flow, ownership semantics, the works. I dug through the 4,475-package
+index response looking for edge cases, found that about 3% of version strings in the wild are complete garbage
+(`"1..1"`, `"V1.0.1"`, `"2.0-beta.3"`, `"3+"`, `"25.A.2.1"`, `"5.58.3-fvtt5"`), discovered that module-to-module dependencies
+live in package manifests rather than the index, figured out how LevelDB world settings work and that reading them *modifies*
+the database (so you have to work from a temp copy). The kind of knowledge that only surfaces after you've actually tried
+to build the thing.
+
+I had also set the project up with strict tooling from day one: pedantic `clippy` lints (yes, all of them, with `-D warnings`), `cargo-deny`, `cargo-audit`, `cargo-machete`, `taplo`, `committed`, and `cargo-nextest`. Not just for the usual reasons - a strict CI pipeline also acts as a constraint and a feedback loop for an AI working autonomously.
+
+## What I handed Fable
+
+I'd written a comprehensive spec: goals, non-goals, a decision log, the full API shape (including request bodies, auth flow, and ownership semantics), the edge cases I'd found in the real index, the LevelDB discovery, the installation layout, the dependency model, everything. The spec ran long - this was not "hey build me a Rust CLI." It was weeks of research condensed into a prompt.
+
+I also asked Fable to first build an implementation plan before writing a single line of code - interviewing me if it had any gaps - and then to implement each phase sequentially, committing at the end of every phase with `just precommit` green.
+
+Then I flipped on `auto` mode and let it run.
+
+## What happened next
+
+Fable produced an eight-phase implementation plan, then started building. Each phase ended with a green `just precommit` run - pedantic clippy, docs on every item including private ones, cargo-deny, cargo-audit, cargo-machete, taplo, committed - before committing and moving on to the next.
+
+About an hour in, it hit the token limit on my Plus plan. I watched the context drain and sent a `resume` message roughly twenty minutes later when it reset. Then I went to sleep.
+
+By morning, Fable had written approximately **20,000 lines of Rust code** across 9 commits and:
+
+- Implemented all eight phases
+- Written 67 tests covering version string edge cases, transactional rollback, crash recovery, dependency cycles, zip-slip protection, LevelDB usage scanning, and resumable downloads
+- Verified the tool against a *live* FoundryVTT installation: real index fetch (4,508 modules + 333 systems), real installs with automatic dependency resolution, update and remove flows
+- Run a cross-platform CI matrix on Ubuntu, macOS, and Windows, and waited for it to go green before declaring itself done
+
+Here's a live recording of `ufpm` running:
+
+<AsciinemaPlayer src="/casts/ufpm.cast" idleTimeLimit={2} loop />
+
+<Image src={tokenTelemetry} alt="Token telemetry showing 4.17 million total tokens at $76.10 for the session" />
+
+The total bill: **4.17 million tokens** (2.49M input, 1.22M output, 466K from cache) at **$76.10** for one session.
+
+## Fable caught things I hadn't anticipated
+
+One catch in particular stood out. The transactional install logic backs up the previous package directory before swapping in the new one, so a crash mid-swap can be recovered on the next run. When Fable implemented crash recovery, it initially tried to restore the backup before creating `Data/modules/`. On a fresh installation this path doesn't exist yet, so the restore failed. Fable caught it via a failing test, diagnosed it, and fixed it - exactly the kind of subtle sequencing bug that's easy to introduce and easy to miss in review.
+
+It also made judgment calls in places where the spec didn't prescribe a specific approach. The index cache is stored as a flat JSON file rather than an SQLite database - which works fine for this use case, but isn't what I or most experienced engineers would have reached for first. The `DataStore` abstraction seam the plan described for a future S3 backend got dropped in favour of typed path accessors directly - less machinery in V1, but a departure from the plan. Both calls are defensible; both are also exactly the kind of thing you notice when you read the code knowing you didn't write it yourself.
+
+## The code quality
+
+I was expecting something functional. What I got was genuinely close to what I'd have written myself.
+
+A few examples. Here's how Fable handled the common "zip contains a single top-level folder" problem - the kind of detail that trips up a lot of archive-handling code:
+
+```rust
+fn locate_package_root(staging: &Path, kind: PackageType, name: &str) -> Result<PathBuf, Error> {
+    if staging.join(kind.manifest_filename()).is_file() {
+        return Ok(staging.to_path_buf());
+    }
+
+    let entries: Vec<PathBuf> = std::fs::read_dir(staging)
+        .map_err(|source| Error::Io { path: staging.to_path_buf(), source })?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .collect();
+
+    if let [single] = entries.as_slice()
+        && single.is_dir()
+        && single.join(kind.manifest_filename()).is_file()
+    {
+        return Ok(single.clone());
+    }
+
+    Err(Error::InvalidArchive {
+        name: name.to_owned(),
+        reason: format!("no {} at the archive root", kind.manifest_filename()),
+    })
+}
+```
+
+That `if let [single] = entries.as_slice()` is a slice pattern - not the kind of thing you reach for unless you know Rust well. It destructures the slice and binds the single element in one expression, and if the slice has any other length the pattern simply doesn't match. Clean, readable, correct.
+
+The resumable download logic handles something subtle: protected packages get time-limited signed URLs, so a URL that was valid when the download started may have been re-issued with fresh query parameters by the time a retry happens. Fable handled this by stripping query strings before storing the canonical URL in the resume sidecar:
+
+```rust
+/// Strips the query and fragment off a URL for resume matching.
+fn canonical(url: &str) -> &str {
+    url.split(['?', '#']).next().unwrap_or(url)
+}
+
+fn resumable_bytes(part: &Path, meta_path: &Path, url: &str) -> Option<(u64, String)> {
+    let size = std::fs::metadata(part).ok()?.len();
+    if size == 0 {
+        return None;
+    }
+    let meta: Meta = serde_json::from_str(&std::fs::read_to_string(meta_path).ok()?).ok()?;
+    if meta.url != canonical(url) {
+        return None;
+    }
+    Some((size, meta.validator?))
+}
+```
+
+The `?` chaining through `Option` here is idiomatic Rust - readable and precise. And `canonical` is exactly as small as it needs to be.
+
+The error types are also worth showing. This is the install module's error enum:
+
+```rust
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("downloading `{name}` failed")]
+    Download {
+        name: String,
+        #[source]
+        source: download::Error,
+    },
+
+    #[error("extracting `{name}` failed")]
+    Extract {
+        name: String,
+        #[source]
+        source: extract::Error,
+    },
+
+    #[error("the archive contains `{found}`, not the requested `{expected}`")]
+    WrongPackage { expected: String, found: String },
+
+    #[error("the archive for `{name}` is unusable: {reason}")]
+    InvalidArchive { name: String, reason: String },
+
+    #[error("I/O failed at {}", path.display())]
+    Io {
+        path: PathBuf,
+        #[source]
+        source: io::Error,
+    },
+
+    #[error("internal failure: {0}")]
+    Internal(String),
+}
+```
+
+Every variant has a specific, actionable error message. The `#[source]` annotations wire up the error chain so `anyhow` can display a full context chain to the user. This is exactly how I'd have written it - maybe even better.
+
+There are things I'd tweak - some messages read a little AI-coded, phrased in ways a human wouldn't naturally write. But those are cosmetic. The architecture and the logic are sound.
+
+## This isn't magic - and it shouldn't replace engineers
+
+I want to be explicit about something, because these write-ups can create a misleading impression.
+
+I didn't type "build me a Rust package manager for FoundryVTT." My prompt was the result of *weeks* of actual engineering work: researching an undocumented API by piecing information together from various sources; sifting through 4,475 real package entries to find edge cases; figuring out LevelDB reading semantics; working out the correct dependency model; deciding on transactional install semantics and what "owned" means in the context of FoundryVTT's licensing. All of that knowledge lived in my head before it went into the spec.
+
+Fable was impressive precisely *because* it had a detailed, accurate spec to work from. It didn't have to guess the API shape or invent the version comparison algorithm. The hard problem-finding was already done. What Fable contributed was the implementation work - and that contribution was genuinely significant, but it built on a foundation of human engineering.
+
+What *is* impressive, and what sets Fable 5 apart from earlier models, is how hands-off the whole thing was. Previous models would go off the rails in ways that required constant course-correction - weird decisions, circular reasoning, getting stuck, confidently doing the wrong thing for ten commits in a row. Fable mostly didn't do that. It made sensible calls, deviated from the plan in one place and *told me about it*, and self-corrected when its own tests caught bugs. That level of autonomous reliability is genuinely new.
+
+Software engineers aren't going anywhere. What's changing is how much you can hand off once the thinking is done.
+
+## A word on Fable as a coding model
+
+Most of the coverage around this release has - understandably - focused on Mythos 5 and its capabilities in security research and biology. That's a bigger story. But it's easy to forget that Fable 5 is also a remarkably capable coding model.
+
+<Image src={frontierCode} alt="FrontierCode benchmark: Accuracy vs Cost. Fable 5 scores highest among frontier models at every effort level, significantly above both Claude Opus 4.8 and GPT-5.5." />
+
+On Cognition's FrontierCode evaluation, Fable 5 scores highest among frontier models at every effort level - and it does so while remaining competitive on cost. Stripe reported it compressed months of engineering into days, completing a 50-million-line Ruby codebase migration in one day that would have taken two months manually. Those numbers are on a different scale than what I did here, but my experiment points in the same direction.
+
+A complete, tested, CI-validated Rust CLI with 20K lines of code, written overnight while I slept. Not bad for a model that also happens to be making waves in genomics research.
+
+As for `ufpm` - the Fable-built version is the starting gun, not the finish line. I'm writing my own version now, using some of what Fable produced as reference. The bones are solid enough that some of the code will probably survive unchanged.

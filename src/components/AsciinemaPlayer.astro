@@ -1,0 +1,62 @@
+---
+interface Props {
+    src: string;
+    cols?: number;
+    rows?: number;
+    autoPlay?: boolean;
+    loop?: boolean;
+    speed?: number;
+    idleTimeLimit?: number;
+}
+
+const {
+    src,
+    cols,
+    rows,
+    autoPlay = false,
+    loop = false,
+    speed = 1,
+    idleTimeLimit,
+} = Astro.props;
+---
+
+<div
+    id="asciinema-player-container"
+    data-src={src}
+    data-cols={cols}
+    data-rows={rows}
+    data-auto-play={String(autoPlay)}
+    data-loop={String(loop)}
+    data-speed={speed}
+    data-idle-time-limit={idleTimeLimit}
+></div>
+
+<style>
+    #asciinema-player-container {
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+</style>
+
+<script>
+    import { create } from 'asciinema-player';
+    import 'asciinema-player/dist/bundle/asciinema-player.css';
+
+    const container = document.getElementById('asciinema-player-container');
+    if (container) {
+        const dataset = container.dataset;
+        create(
+            dataset.src!,
+            container,
+            {
+                cols: dataset.cols ? Number(dataset.cols) : undefined,
+                rows: dataset.rows ? Number(dataset.rows) : undefined,
+                autoPlay: dataset.autoPlay === 'true',
+                loop: dataset.loop === 'true',
+                speed: dataset.speed ? Number(dataset.speed) : 1,
+                idleTimeLimit: dataset.idleTimeLimit ? Number(dataset.idleTimeLimit) : undefined,
+                theme: 'monokai',
+            },
+        );
+    }
+</script>
