@@ -2,6 +2,7 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import {unified} from '@astrojs/markdown-remark';
 import {defineConfig} from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
@@ -16,6 +17,6 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 	markdown: {
-		remarkPlugins: [remarkReadingTime],
+		processor: unified({remarkPlugins: [remarkReadingTime]}),
 	},
 });
