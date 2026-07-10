@@ -1,0 +1,82 @@
+---
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+
+const links = [
+  { href: '/blogs', label: 'posts' },
+  { href: '/projects', label: 'projects' },
+  { href: '/about', label: 'about' },
+];
+---
+
+<nav class="ts-nav" aria-label="Primary">
+  <div class="ts-nav__inner">
+    <a class="ts-nav__brand" href="/">
+      <span class="ts-brandmark" aria-hidden="true"></span>
+      Wannes
+    </a>
+    <div class="ts-nav__links">
+      {links.map((l) => (
+        <a
+          class={`ts-nav__link${isActive(l.href) ? ' is-active' : ''}`}
+          href={l.href}
+          aria-current={isActive(l.href) ? 'page' : undefined}
+        >{l.label}</a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<style>
+  .ts-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklch, var(--ts-page) 82%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ts-border-subtle);
+  }
+  .ts-nav__inner {
+    max-width: var(--ts-maxw);
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ts-nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--ts-font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--ts-foreground);
+    text-decoration: none;
+  }
+  .ts-brandmark {
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--ts-primary), var(--ts-accent));
+    flex: none;
+  }
+  .ts-nav__links { display: flex; gap: 22px; align-items: center; }
+  .ts-nav__link {
+    font-family: var(--ts-font-mono);
+    font-size: 13px;
+    color: var(--ts-muted);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .ts-nav__link:hover { color: var(--ts-accent-text); }
+  .ts-nav__link.is-active { color: var(--ts-accent-text); border-bottom-color: var(--ts-primary); }
+  @media (max-width: 560px) {
+    .ts-nav__links { gap: 16px; }
+  }
+</style>

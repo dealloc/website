@@ -1,119 +1,352 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import BackToHome from "../../components/BackToHome.astro";
+import BackToHome from '../../components/BackToHome.astro';
 
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf(),
 );
 
-const title = "Projects - Wannes Gennar";
-const description = "Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.";
+const title = 'Projects - Wannes';
+const description =
+	'Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.';
 ---
 
 <BaseLayout title={title} description={description}>
-	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
+	<main class="flex-1">
+		<div class="wrap ts-header">
+			<p class="eyebrow"><span class="sq" aria-hidden="true"></span>projects</p>
+			<h1 class="ts-title">Projects</h1>
+			<p class="ts-subtitle">
+				Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.
+			</p>
+			<p class="ts-subtitle">Otherwise known as my graveyard of personal projects.</p>
+			<hr class="gradient-rule" />
+		</div>
 
-		<div class="max-w-5xl mx-auto">
-			<!-- Header Section -->
-			<div class="mb-16 space-y-6">
-				<h1 class="text-5xl md:text-7xl font-black tracking-tight bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500 bg-clip-text text-transparent animate-gradient drop-shadow-2xl" style="font-family: 'Montserrat', sans-serif; background-size: 200% 200%;">
-					Projects
-				</h1>
-				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
-					Personal and professional projects showcasing my work in .NET, Rust, Elixir, and modern web technologies.
-				</p>
-				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
-					Otherwise known as my graveyard of personal projects
-				</p>
-			</div>
-
-			<!-- Projects Grid -->
+		<div class="wrap">
 			{projects.length === 0 ? (
-				<div class="text-center py-16">
-					<p class="text-xl text-gray-600 dark:text-gray-400">No projects yet. Check back soon!</p>
-				</div>
+				<p class="ts-empty">No projects yet.</p>
 			) : (
-				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+				<ul class="grid" role="list">
 					{projects.map((project) => (
-						<article class="group bg-white dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-xl hover:-translate-y-1">
-							<a href={`/projects/${project.id}`} class="block">
+						<li class="card-wrap">
+							<a class="card" href={`/projects/${project.id}`}>
 								{project.data.heroImage && (
-									<div class="aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
+									<div class="card__media">
 										<img
 											src={project.data.heroImage}
 											alt={project.data.title}
-											class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+											class="card__img"
+											loading="lazy"
 										/>
 									</div>
 								)}
 
-								<div class="p-6 space-y-4">
-									<!-- Status and Date -->
-									<div class="flex items-center gap-3 text-sm flex-wrap">
-										<span class={`px-2.5 py-1 rounded-full font-medium ${
-											project.data.status === 'active'
-												? 'bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400'
-												: project.data.status === 'completed'
-												? 'bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
-												: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400'
-										}`}>
+								<div class="card__body">
+									<div class="card__meta">
+										<span class={`status-pill ${project.data.status === 'active' ? 'status-pill--active' : 'status-pill--muted'}`}>
 											{project.data.status.charAt(0).toUpperCase() + project.data.status.slice(1)}
 										</span>
 										{project.data.sponsorUrl && (
-											<span class="px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-pink-100 to-red-100 dark:from-pink-950/30 dark:to-red-950/30 text-pink-700 dark:text-pink-400 inline-flex items-center gap-1" title="Sponsorship available">
-												<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-													<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+											<span class="sponsor-pill" title="Sponsorship available">
+												<svg class="sponsor-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+													<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
 												</svg>
 												Sponsor
 											</span>
 										)}
-										<span class="text-gray-600 dark:text-gray-400">
+										<span class="date-range">
 											{project.data.startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
-											{project.data.endDate && ` - ${project.data.endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}`}
+											{project.data.endDate &&
+												` - ${project.data.endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}`}
 										</span>
 									</div>
 
-									<h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" style="font-family: 'Montserrat', sans-serif;">
-										{project.data.title}
-									</h2>
+									<h2 class="card__title">{project.data.title}</h2>
 
-									{project.data.description && (
-										<p class="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
-											{project.data.description}
-										</p>
-									)}
+									{project.data.description && <p class="card__desc">{project.data.description}</p>}
 
-									<!-- Technologies -->
 									{project.data.technologies && project.data.technologies.length > 0 && (
-										<div class="flex flex-wrap gap-2">
+										<div class="tech-tags">
 											{project.data.technologies.slice(0, 4).map((tech) => (
-												<span class="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
-													{tech}
-												</span>
+												<span class="tech-tag">{tech}</span>
 											))}
 											{project.data.technologies.length > 4 && (
-												<span class="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
-													+{project.data.technologies.length - 4}
-												</span>
+												<span class="tech-tag">+{project.data.technologies.length - 4}</span>
 											)}
 										</div>
 									)}
 
-									<div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-3 transition-all">
+									<span class="view-link">
 										View project
-										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-										</svg>
-									</div>
+										<span class="view-arrow" aria-hidden="true">→</span>
+									</span>
 								</div>
 							</a>
-						</article>
+						</li>
 					))}
-				</div>
+				</ul>
 			)}
 
 			<BackToHome />
 		</div>
 	</main>
 </BaseLayout>
+
+<style>
+	.wrap {
+		max-width: var(--ts-maxw);
+		margin: 0 auto;
+		padding: 0 24px;
+	}
+
+	/* Header */
+	.ts-header {
+		padding-top: clamp(48px, 8vw, 80px);
+		padding-bottom: clamp(20px, 3vw, 28px);
+	}
+	.eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		font-family: var(--ts-font-mono);
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ts-muted);
+		margin: 0 0 16px 0;
+	}
+	.eyebrow .sq {
+		width: 7px;
+		height: 7px;
+		background: var(--ts-primary);
+		flex: none;
+	}
+	.ts-title {
+		font-family: var(--ts-font-heading);
+		font-weight: 700;
+		font-size: clamp(40px, 7vw, 64px);
+		line-height: 1.05;
+		letter-spacing: -0.02em;
+		margin: 0;
+		color: var(--ts-foreground);
+	}
+	.ts-subtitle {
+		margin: 16px 0 0 0;
+		font-family: var(--ts-font-body);
+		font-size: 18px;
+		line-height: 1.6;
+		font-weight: 400;
+		color: var(--ts-muted);
+		max-width: 62ch;
+	}
+	.gradient-rule {
+		height: 2px;
+		border: 0;
+		margin: clamp(28px, 4vw, 40px) 0 0 0;
+		background: linear-gradient(90deg, var(--ts-primary), var(--ts-accent) 70%, transparent);
+		border-radius: 2px;
+	}
+
+	/* Grid */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: 24px;
+		list-style: none;
+		padding: clamp(28px, 4vw, 40px) 0 0;
+		margin: 0;
+	}
+
+	/* Card */
+	.card-wrap {
+		list-style: none;
+	}
+	.card {
+		display: block;
+		height: 100%;
+		background: var(--ts-surface);
+		border: 1px solid var(--ts-border-subtle);
+		border-radius: 10px;
+		overflow: hidden;
+		box-shadow: var(--ts-shadow-sm);
+		text-decoration: none;
+		transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.card:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--ts-shadow-md);
+			border-color: var(--ts-border);
+		}
+		.card:hover .card__img {
+			transform: scale(1.04);
+		}
+		.card:hover .card__title {
+			color: var(--ts-accent-text);
+		}
+		.card:hover .view-link {
+			color: var(--ts-primary);
+		}
+		.card:hover .view-arrow {
+			transform: translateX(3px);
+		}
+	}
+	.card:focus-visible {
+		outline: 2px solid var(--ts-primary);
+		outline-offset: 3px;
+		border-radius: 10px;
+	}
+
+	.card__media {
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		background: var(--ts-elevated);
+	}
+	.card__img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 320ms ease;
+	}
+
+	.card__body {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	/* Meta row */
+	.card__meta {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.status-pill {
+		display: inline-flex;
+		align-items: center;
+		font-family: var(--ts-font-mono);
+		font-size: 11.5px;
+		font-weight: 500;
+		letter-spacing: 0.02em;
+		padding: 3px 9px;
+		border-radius: 5px;
+		border: 1px solid var(--ts-border-subtle);
+		background: var(--ts-elevated);
+		color: var(--ts-muted);
+	}
+	.status-pill--active {
+		background: oklch(62% 0.08 165 / 0.10);
+		color: var(--ts-accent-text);
+		border-color: oklch(62% 0.08 165 / 0.3);
+	}
+	.status-pill--muted {
+		background: var(--ts-elevated);
+		color: var(--ts-muted);
+		border-color: var(--ts-border-subtle);
+	}
+	.sponsor-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-family: var(--ts-font-mono);
+		font-size: 11.5px;
+		font-weight: 500;
+		padding: 3px 9px;
+		border-radius: 5px;
+		border: 1px solid oklch(62% 0.08 165 / 0.3);
+		background: oklch(62% 0.08 165 / 0.08);
+		color: var(--ts-accent-text);
+	}
+	.sponsor-icon {
+		width: 11px;
+		height: 11px;
+		flex: none;
+	}
+	.date-range {
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		color: var(--ts-muted);
+	}
+
+	/* Title + description */
+	.card__title {
+		font-family: var(--ts-font-heading);
+		font-weight: 600;
+		font-size: 22px;
+		line-height: 1.2;
+		letter-spacing: -0.02em;
+		margin: 2px 0 0 0;
+		color: var(--ts-foreground);
+		transition: color 160ms ease;
+	}
+	.card__desc {
+		font-family: var(--ts-font-body);
+		font-size: 14.5px;
+		line-height: 1.55;
+		color: var(--ts-muted);
+		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	/* Tech tags */
+	.tech-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-top: 2px;
+	}
+	.tech-tag {
+		font-family: var(--ts-font-mono);
+		font-size: 11.5px;
+		padding: 3px 8px;
+		border: 1px solid var(--ts-border-subtle);
+		border-radius: 4px;
+		background: var(--ts-elevated);
+		color: var(--ts-muted);
+	}
+
+	/* View link */
+	.view-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		margin-top: 6px;
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		font-weight: 500;
+		color: var(--ts-accent-text);
+		transition: color 160ms ease;
+	}
+	.view-arrow {
+		display: inline-block;
+		transition: transform 200ms ease;
+	}
+
+	/* Empty state */
+	.ts-empty {
+		padding: clamp(40px, 6vw, 64px) 0;
+		font-family: var(--ts-font-body);
+		font-size: 15px;
+		color: var(--ts-muted);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.card,
+		.card__img,
+		.card__title,
+		.view-link,
+		.view-arrow {
+			transition-duration: 0.01ms !important;
+		}
+	}
+</style>

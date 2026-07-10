@@ -1,67 +1,104 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --color-surface: #ffffff;
-  --color-surface-dark: #030712;
+/* ============================================================
+   TEAL SQUARE — unified design tokens (prefixed --ts-)
+   Meshum brand OKLCH values; primary + accent constant across
+   themes; text/border tokens shift per theme for readability.
+   ============================================================ */
+:root {
+  --ts-primary: oklch(62% 0.08 165);      /* teal-green — constant */
+  --ts-accent: oklch(32% 0.02 220);       /* dark slate — constant */
+
+  --ts-page: oklch(96% 0.008 165);
+  --ts-surface: oklch(100% 0 0);
+  --ts-elevated: oklch(98.5% 0.004 165);
+
+  --ts-foreground: oklch(20% 0.02 220);
+  --ts-muted: oklch(48% 0.02 220);
+  --ts-subtle: oklch(58% 0.025 220);
+  --ts-accent-text: oklch(62% 0.08 165);
+
+  --ts-border: oklch(90% 0.012 220);
+  --ts-border-subtle: oklch(95% 0.006 220);
+
+  --ts-font-heading: "Syne", system-ui, sans-serif;
+  --ts-font-body: "Lexend", system-ui, -apple-system, sans-serif;
+  --ts-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  --ts-maxw: 980px;
+
+  --ts-shadow-sm: 0 1px 2px oklch(20% 0.02 220 / 0.05);
+  --ts-shadow-md: 0 6px 18px -6px oklch(20% 0.02 220 / 0.10);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: dark;
+    --ts-page: oklch(19% 0.02 220);
+    --ts-surface: oklch(21% 0.022 220);
+    --ts-elevated: oklch(20% 0.021 220);
+
+    --ts-foreground: oklch(97% 0.005 165);
+    --ts-muted: oklch(66% 0.025 220);
+    --ts-subtle: oklch(76% 0.03 220);
+    --ts-accent-text: oklch(70% 0.08 165);
+
+    --ts-border: oklch(23% 0.025 220);
+    --ts-border-subtle: oklch(17% 0.02 220);
+
+    --ts-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30);
+    --ts-shadow-md: 0 8px 20px -6px rgba(0, 0, 0, 0.45);
   }
 }
 
-@keyframes gradient {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+/* Map tokens into Tailwind's theme so utilities like bg-page,
+   text-foreground, border-border-subtle, font-heading exist. */
+@theme {
+  --color-page: var(--ts-page);
+  --color-surface: var(--ts-surface);
+  --color-elevated: var(--ts-elevated);
+  --color-foreground: var(--ts-foreground);
+  --color-muted: var(--ts-muted);
+  --color-subtle: var(--ts-subtle);
+  --color-primary: var(--ts-primary);
+  --color-accent: var(--ts-accent);
+  --color-accent-text: var(--ts-accent-text);
+  --color-border: var(--ts-border);
+  --color-border-subtle: var(--ts-border-subtle);
+  --font-heading: var(--ts-font-heading);
+  --font-body: var(--ts-font-body);
+  --font-mono: var(--ts-font-mono);
 }
 
-.animate-gradient {
-  animation: gradient 8s ease infinite;
+/* ============================================================
+   Base
+   ============================================================ */
+body {
+  margin: 0;
+  background-color: var(--ts-page);
+  color: var(--ts-foreground);
+  font-family: var(--ts-font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+::selection { background: oklch(62% 0.08 165 / 0.22); }
 
 /* View Transition API customization */
-@view-transition {
-  navigation: auto;
-}
-
-/* Customize the default cross-fade animation */
+@view-transition { navigation: auto; }
 ::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.3s;
-}
+::view-transition-new(root) { animation-duration: 0.3s; }
+::view-transition-old(root) { animation: slide-out 0.3s ease-in; }
+::view-transition-new(root) { animation: slide-in 0.3s ease-out; }
+@keyframes slide-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-10px); opacity: 0; } }
+@keyframes slide-in { from { transform: translateX(10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-::view-transition-old(root) {
-  animation: slide-out 0.3s ease-in;
-}
-
-::view-transition-new(root) {
-  animation: slide-in 0.3s ease-out;
-}
-
-@keyframes slide-out {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-10px);
-    opacity: 0;
-  }
-}
-
-@keyframes slide-in {
-  from {
-    transform: translateX(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

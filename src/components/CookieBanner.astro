@@ -4,24 +4,16 @@
 <div id="cookie-banner" class="cookie-banner hidden">
 	<div class="cookie-banner-content">
 		<div class="cookie-banner-inner">
-			<!-- Gradient background -->
-			<div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 rounded-2xl"></div>
-			<div class="absolute inset-0 border border-gray-200 dark:border-gray-700 rounded-2xl"></div>
-
-			<div class="relative flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-				<div class="flex-1">
-					<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">We value your privacy</h3>
-					<p class="text-sm text-gray-600 dark:text-gray-400">
+			<div class="cb-row">
+				<div class="cb-text">
+					<h3>We value your privacy</h3>
+					<p>
 						This website uses Microsoft Clarity to understand how visitors interact with our site through anonymous usage analytics. By accepting, you consent to the collection of this data. We do not collect personally identifiable information or share your data with third parties beyond Microsoft's analytics service. You can decline and still use the website normally.
 					</p>
 				</div>
-				<div class="flex gap-3 shrink-0">
-					<button id="cookie-decline" class="btn-secondary whitespace-nowrap px-6 py-2 rounded-lg font-medium transition-colors">
-						Decline
-					</button>
-					<button id="cookie-accept" class="btn-primary whitespace-nowrap px-6 py-2 rounded-lg font-medium">
-						Accept
-					</button>
+				<div class="cb-actions">
+					<button id="cookie-decline" class="btn-secondary">Decline</button>
+					<button id="cookie-accept" class="btn-primary">Accept</button>
 				</div>
 			</div>
 		</div>
@@ -41,74 +33,81 @@
 		overflow-x: hidden;
 	}
 
-	.cookie-banner.hidden {
-		display: none;
-	}
+	.cookie-banner.hidden { display: none; }
 
-	.cookie-banner-content {
-		max-width: 1200px;
-		margin: 0 auto;
-		width: 100%;
-	}
+	.cookie-banner-content { max-width: 880px; margin: 0 auto; width: 100%; }
 
 	.cookie-banner-inner {
 		position: relative;
 		padding: 1.5rem;
 		backdrop-filter: blur(12px);
-		background: rgba(255, 255, 255, 0.95);
-		border-radius: 1rem;
-		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+		-webkit-backdrop-filter: blur(12px);
+		background: color-mix(in oklch, var(--ts-surface) 92%, transparent);
+		border: 1px solid var(--ts-border);
+		border-radius: 12px;
+		box-shadow: var(--ts-shadow-md);
 	}
 
-	@media (prefers-color-scheme: dark) {
-		.cookie-banner-inner {
-			background: rgba(17, 24, 39, 0.95);
-			box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-		}
+	.cb-row {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
 	}
+	@media (min-width: 640px) {
+		.cb-row { flex-direction: row; align-items: center; justify-content: space-between; }
+	}
+
+	.cb-text h3 {
+		font-family: var(--ts-font-heading);
+		font-weight: 600;
+		font-size: 1.125rem;
+		margin: 0 0 0.5rem 0;
+		color: var(--ts-foreground);
+	}
+	.cb-text p {
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--ts-muted);
+		margin: 0;
+	}
+
+	.cb-actions { display: flex; gap: 0.75rem; flex-shrink: 0; }
 
 	.btn-primary {
-		background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-		color: white;
+		background: var(--ts-accent);
+		color: oklch(98% 0.005 220);
 		border: none;
+		padding: 0.5rem 1.5rem;
+		border-radius: 8px;
+		font-family: var(--ts-font-body);
+		font-weight: 500;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: opacity 160ms ease;
 	}
-
-	.btn-primary:hover {
-		opacity: 0.9;
-	}
+	.btn-primary:hover { opacity: 0.88; }
 
 	.btn-secondary {
 		background: transparent;
-		border: 1px solid rgba(156, 163, 175, 0.3);
-		color: rgb(75, 85, 99);
+		border: 1px solid var(--ts-border);
+		color: var(--ts-muted);
+		padding: 0.5rem 1.5rem;
+		border-radius: 8px;
+		font-family: var(--ts-font-body);
+		font-weight: 500;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: background 160ms ease, color 160ms ease;
 	}
-
-	@media (prefers-color-scheme: dark) {
-		.btn-secondary {
-			border-color: rgba(156, 163, 175, 0.2);
-			color: rgb(209, 213, 219);
-		}
-	}
-
-	.btn-secondary:hover {
-		background: rgba(156, 163, 175, 0.1);
-	}
+	.btn-secondary:hover { background: var(--ts-elevated); color: var(--ts-foreground); }
 
 	@keyframes slideUp {
-		from {
-			transform: translateY(100%);
-			opacity: 0;
-		}
-		to {
-			transform: translateY(0);
-			opacity: 1;
-		}
+		from { transform: translateY(100%); opacity: 0; }
+		to { transform: translateY(0); opacity: 1; }
 	}
 
 	@media (max-width: 640px) {
-		.cookie-banner-inner {
-			padding: 1rem;
-		}
+		.cookie-banner-inner { padding: 1rem; }
 	}
 </style>
 

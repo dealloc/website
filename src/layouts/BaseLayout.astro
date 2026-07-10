@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import Tracking from "../components/Tracking.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 import FallbackImage from '../assets/wannes.webp';
 import ClientRouter from 'astro/components/ClientRouter.astro';
 
@@ -45,9 +47,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<link rel="preconnect" href="https://fonts.googleapis.com"/>
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 
-        <!-- Google Fonts -->
+        <!-- Google Fonts: Syne (display) + Lexend (body) + JetBrains Mono (code) -->
         <link
-                href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"
+                href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&family=Syne:wght@400..800&display=swap"
                 rel="stylesheet"
         />
 
@@ -73,13 +75,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <Tracking/>
 		<ClientRouter />
     </head>
-    <body class="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors overflow-x-hidden">
+    <body class="min-h-screen flex flex-col overflow-x-hidden">
+        <Nav />
         <slot/>
-		<!-- Background gradient blur -->
-		<div class="absolute inset-0 -z-10 overflow-hidden">
-			<div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
-			<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-3xl"></div>
-		</div>
-		<CookieBanner />
+        <Footer />
+        <CookieBanner />
     </body>
 </html>

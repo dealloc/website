@@ -1,6 +1,6 @@
 # Personal Website - Technical Specification & Design System
 
-**Project:** Wannes Gennar Personal Website
+**Project:** Wannes Personal Website
 **Stack:** Astro + TailwindCSS v4 + MDX
 **Goal:** Professional personal brand with blog-first focus
 **Target Audience:** Fellow developers & tech peers
@@ -26,7 +26,7 @@
 ## 🎯 Strategic Overview
 
 ### Brand Positioning
-- **Who:** Wannes Gennar - Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies
+- **Who:** Wannes - Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies
 - **Company:** Elixus (https://www.elixus.be)
 - **Product:** Meshum (https://www.meshum.dev) - Unified knowledge layer for teams
 - **Value Proposition:** Technical expertise, thought leadership, innovative solutions
@@ -324,7 +324,7 @@ Applied via `@media (prefers-color-scheme: dark)` or Tailwind's `dark:` prefix.
 <footer class="border-t border-border mt-auto">
   <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex justify-between items-center">
-      <p class="text-muted">© 2025 Wannes Gennar</p>
+      <p class="text-muted">© 2025 Wannes</p>
       <div class="flex gap-6">
         <a href="https://github.com/...">GitHub</a>
         <a href="...">LinkedIn</a>
@@ -595,7 +595,7 @@ Create similar pages for 2-3 other projects.
 
 #### src/consts.ts
 ```typescript
-export const SITE_TITLE = 'Wannes Gennar';
+export const SITE_TITLE = 'Wannes';
 export const SITE_DESCRIPTION = 'Full-stack .NET engineer exploring Rust, Elixir, and modern web technologies. Founder of Elixus, creator of Meshum.';
 export const SITE_URL = 'https://wannesgennar.com'; // Update with actual domain
 
@@ -606,7 +606,7 @@ export const SOCIAL_LINKS = {
 };
 
 export const AUTHOR = {
-  name: 'Wannes Gennar',
+  name: 'Wannes',
   bio: 'Full-stack .NET engineer with a passion for building scalable systems. Founder of Elixus, currently building Meshum—a unified knowledge layer for software teams.',
   company: 'Elixus',
   companyUrl: 'https://www.elixus.be',
@@ -1422,7 +1422,7 @@ This is a personal project, but if you're an AI agent helping with implementatio
 
 ## 📞 Contact
 
-**Wannes Gennar**
+**Wannes**
 Full-stack .NET Engineer
 Founder, Elixus
 Creator, Meshum

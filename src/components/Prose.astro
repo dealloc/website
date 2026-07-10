@@ -1,95 +1,142 @@
 ---
 ---
 
-<div class="prose prose-lg prose-gray dark:prose-invert max-w-none
-				prose-headings:font-bold prose-headings:tracking-tight prose-headings:font-['Montserrat']
-				prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12
-				prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-12 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200 dark:prose-h2:border-gray-800
-				prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-8
-				prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-6 prose-h4:font-semibold prose-h4:text-gray-800 dark:prose-h4:text-gray-200
-				prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-4 prose-h5:font-semibold prose-h5:text-gray-700 dark:prose-h5:text-gray-300
-				prose-h6:text-base prose-h6:mb-2 prose-h6:mt-4 prose-h6:font-semibold prose-h6:text-gray-700 dark:prose-h6:text-gray-300
-				prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-lg prose-p:mb-6
-				prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline prose-a:border-b prose-a:border-blue-300 dark:prose-a:border-blue-600 hover:prose-a:text-purple-600 dark:hover:prose-a:text-purple-400 hover:prose-a:border-purple-300 dark:hover:prose-a:border-purple-600 prose-a:font-semibold prose-a:transition-colors
-				prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-strong:font-bold
-				prose-em:text-gray-700 dark:prose-em:text-gray-300
-				prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-base prose-code:before:content-none prose-code:after:content-none prose-code:font-normal
-				prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950 prose-pre:border prose-pre:border-gray-800 dark:prose-pre:border-gray-700 prose-pre:rounded-lg prose-pre:my-8 prose-pre:shadow-lg prose-pre:p-6
-				prose-pre>code:text-gray-100 prose-pre>code:bg-transparent prose-pre>code:p-0
-				prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-950/20 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r prose-blockquote:not-italic prose-blockquote:my-8
-				prose-blockquote>p:text-gray-700 dark:prose-blockquote>p:text-gray-300 prose-blockquote>p:my-2
-				prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6
-				prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6
-				prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:text-lg prose-li:pl-2
-				prose-img:rounded-xl prose-img:shadow-xl prose-img:my-8
-				prose-hr:border-gray-300 dark:prose-hr:border-gray-700 prose-hr:my-12
-				prose-table:border-collapse prose-table:border prose-table:border-gray-300 dark:prose-table:border-gray-700 prose-table:rounded-lg prose-table:overflow-hidden prose-table:my-8
-				prose-th:bg-gray-100 dark:prose-th:bg-gray-900 prose-th:border prose-th:border-gray-300 dark:prose-th:border-gray-700 prose-th:px-4 prose-th:py-3 prose-th:font-bold prose-th:text-left
-				prose-td:border prose-td:border-gray-300 dark:prose-td:border-gray-700 prose-td:px-4 prose-td:py-3
-			">
+<div class="prose prose-lg max-w-none">
 	<slot></slot>
 </div>
 
 <style is:global>
-	/* Content Styles - Special Elements */
-
-	/* Fix code blocks - prevent inline code styles from affecting code inside pre */
-	.prose pre code {
-		background-color: transparent !important;
-		color: inherit !important;
-		padding: 0 !important;
+	/* ============================================================
+	   Prose — Teal Square
+	   Global styles override the typography plugin's :where() defaults.
+	   ============================================================ */
+	.prose {
+		color: var(--ts-foreground);
+		font-family: var(--ts-font-body);
+		line-height: 1.7;
 	}
+
+	.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+		font-family: var(--ts-font-heading);
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--ts-foreground);
+	}
+	.prose h1 { font-size: 2.25rem; margin: 3rem 0 1.5rem; line-height: 1.15; }
+	.prose h2 { font-size: 1.875rem; margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--ts-border-subtle); line-height: 1.2; }
+	.prose h3 { font-size: 1.5rem; margin: 2rem 0 0.75rem; line-height: 1.25; }
+	.prose h4 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; font-weight: 500; }
+	.prose h5 { font-size: 1.125rem; margin: 1.25rem 0 0.5rem; font-weight: 500; color: var(--ts-muted); }
+	.prose h6 { font-size: 1rem; margin: 1rem 0 0.5rem; font-weight: 500; color: var(--ts-muted); }
+
+	.prose p { margin: 0 0 1.25em; font-size: 1.0625rem; }
+
+	.prose a {
+		color: var(--ts-accent-text);
+		text-decoration: underline;
+		text-decoration-color: oklch(62% 0.08 165 / 0.4);
+		text-underline-offset: 3px;
+		font-weight: 500;
+		transition: color 160ms ease, text-decoration-color 160ms ease;
+	}
+	.prose a:hover { color: var(--ts-primary); text-decoration-color: var(--ts-primary); }
+
+	.prose strong { color: var(--ts-foreground); font-weight: 600; }
+	.prose em { color: var(--ts-foreground); }
+
+	/* Inline code — foreground text for AA; teal reserved for links/large */
+	.prose code {
+		font-family: var(--ts-font-mono);
+		font-size: 0.9em;
+		background: var(--ts-elevated);
+		border: 1px solid var(--ts-border-subtle);
+		padding: 0.15em 0.4em;
+		border-radius: 4px;
+		color: var(--ts-foreground);
+	}
+	/* Code blocks — dark technical surface in both themes */
+	.prose pre {
+		background: oklch(19% 0.02 220);
+		border: 1px solid var(--ts-border);
+		border-radius: 8px;
+		padding: 1.25rem 1.5rem;
+		margin: 1.5rem 0;
+		overflow-x: auto;
+	}
+	.prose pre code {
+		background: transparent;
+		border: none;
+		padding: 0;
+		color: oklch(92% 0.005 220);
+		font-size: 0.875rem;
+		line-height: 1.55;
+	}
+
+	.prose blockquote {
+		border-left: 3px solid var(--ts-primary);
+		background: var(--ts-elevated);
+		padding: 0.75rem 1.5rem;
+		margin: 1.5rem 0;
+		border-radius: 0 6px 6px 0;
+		font-style: normal;
+	}
+	.prose blockquote p { color: var(--ts-muted); margin: 0.5em 0; }
+
+	.prose ul, .prose ol { margin: 1.5rem 0; padding-left: 1.5rem; }
+	.prose ul { list-style: disc; }
+	.prose ol { list-style: decimal; }
+	.prose li { margin: 0.4rem 0; color: var(--ts-foreground); }
+	.prose li::marker { color: var(--ts-primary); }
+
+	.prose img { border-radius: 8px; margin: 1.5rem 0; max-width: 100%; height: auto; }
+	.prose hr { border: none; border-top: 1px solid var(--ts-border-subtle); margin: 2.5rem 0; }
+
+	.prose table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+	.prose th {
+		background: var(--ts-elevated);
+		font-family: var(--ts-font-heading);
+		font-weight: 600;
+		text-align: left;
+		padding: 0.6rem 0.75rem;
+		border: 1px solid var(--ts-border);
+		color: var(--ts-foreground);
+	}
+	.prose td { padding: 0.6rem 0.75rem; border: 1px solid var(--ts-border); color: var(--ts-muted); }
 
 	/* Keyboard keys */
 	.prose kbd {
 		display: inline-block;
 		padding: 0.125rem 0.5rem;
-		font-family: ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', monospace;
+		font-family: var(--ts-font-mono);
 		font-size: 0.875em;
-		font-weight: 600;
+		font-weight: 500;
 		line-height: 1.5;
-		color: oklch(20% .01 254);
-		background-color: oklch(96% .005 254);
-		border: 1px solid oklch(85% .01 254);
+		color: var(--ts-foreground);
+		background-color: var(--ts-elevated);
+		border: 1px solid var(--ts-border);
 		border-radius: 0.375rem;
-		box-shadow: 0 1px 0 oklch(85% .01 254), 0 2px 3px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 1px 0 var(--ts-border);
 	}
 
-	@media (prefers-color-scheme: dark) {
-		.prose kbd {
-			color: oklch(95% .01 254);
-			background-color: oklch(25% .04 254);
-			border-color: oklch(40% .03 254);
-			box-shadow: 0 1px 0 oklch(40% .03 254), 0 2px 3px rgba(0, 0, 0, 0.4);
-		}
-	}
-
-	/* Highlighted/marked text */
+	/* Highlighted/marked text — keep amber for highlight semantics */
 	.prose mark {
 		padding: 0.125rem 0.25rem;
-		background-color: oklch(90% .15 85); /* Amber/yellow highlight */
-		color: oklch(20% .01 254);
+		background-color: oklch(90% 0.15 85);
+		color: oklch(20% 0.01 220);
 		border-radius: 0.25rem;
 	}
-
 	@media (prefers-color-scheme: dark) {
 		.prose mark {
-			background-color: oklch(45% .15 85); /* Darker amber for dark mode */
-			color: oklch(95% .01 254);
+			background-color: oklch(45% 0.15 85);
+			color: oklch(97% 0.01 220);
 		}
 	}
 
 	/* Abbreviations */
 	.prose abbr {
 		text-decoration: underline dotted;
-		text-decoration-color: oklch(55% .04 254);
+		text-decoration-color: var(--ts-muted);
 		text-underline-offset: 3px;
 		cursor: help;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.prose abbr {
-			text-decoration-color: oklch(70% .08 254);
-		}
 	}
 </style>

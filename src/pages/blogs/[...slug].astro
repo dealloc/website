@@ -23,56 +23,39 @@ const { title, description, pubDate, updatedDate, heroImage, maxHeroHeight, prev
 <BaseLayout title={title} description={description} image={previewImage || heroImage}>
 	<ScrollProgressBar />
 
-	<main class="flex-1 px-6 py-16 md:py-24 relative overflow-hidden">
-
-		<article class="max-w-4xl mx-auto">
+	<main class="flex-1">
+		<article class="ts-post">
 			<!-- Back link -->
-			<div class="mb-8">
-				<a
-					href="/blogs"
-					class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-					</svg>
-					Back to Blog
-				</a>
-			</div>
+			<a class="ts-post__back" href="/blogs">← back to posts</a>
 
 			<!-- Article Header -->
-			<header class="mb-16 space-y-6">
-				<h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-100 dark:via-gray-200 dark:to-gray-100 bg-clip-text text-transparent" style="font-family: 'Montserrat', sans-serif;">
-					{title}
-				</h1>
+			<header class="ts-post__header">
+				<h1 class="ts-post__title">{title}</h1>
 
 				{description && (
-					<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
-						{description}
-					</p>
+					<p class="ts-post__desc">{description}</p>
 				)}
 
-				<div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-500 border-l-4 border-blue-500 pl-4">
+				<div class="ts-post__meta">
 					<FormattedDate date={pubDate} />
 					{updatedDate && (
 						<>
-							<span>•</span>
-							<div>
-								Updated <FormattedDate date={updatedDate} />
-							</div>
+							<span class="ts-post__meta-sep" aria-hidden="true">·</span>
+							<span>Updated <FormattedDate date={updatedDate} /></span>
 						</>
 					)}
 					{remarkPluginFrontmatter?.minutesRead && (
 						<>
-							<span>•</span>
+							<span class="ts-post__meta-sep" aria-hidden="true">·</span>
 							<span>{remarkPluginFrontmatter.minutesRead}</span>
 						</>
 					)}
-					<span>•</span>
+					<span class="ts-post__meta-sep" aria-hidden="true">·</span>
 					<a
+						class="ts-post__typo"
 						href={`https://github.com/dealloc/website/issues/new?title=${encodeURIComponent(`Typo in "${title}"`)}&body=${encodeURIComponent(`I found a typo in the blog post:\n\n**Post:** ${title}\n**URL:** ${Astro.url.href}\n\n**Description:**\n<!-- Please describe the typo here -->`)}`}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="text-gray-500 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
 					>
 						Spotted a typo?
 					</a>
@@ -81,8 +64,8 @@ const { title, description, pubDate, updatedDate, heroImage, maxHeroHeight, prev
 
 			<!-- Hero Image (if present) -->
 			{heroImage && (
-				<div class="flex justify-center mb-8 rounded-xl overflow-hidden">
-					<img src={heroImage.src} alt={title} class="w-auto h-auto" style={{ maxHeight: maxHeroHeight && `${maxHeroHeight}px` }} />
+				<div class="ts-post__hero">
+					<img src={heroImage.src} alt={title} style={{ maxHeight: maxHeroHeight && `${maxHeroHeight}px` }} />
 				</div>
 			)}
 
@@ -91,17 +74,136 @@ const { title, description, pubDate, updatedDate, heroImage, maxHeroHeight, prev
 				<Content />
 			</Prose>
 
-			<!-- Back to top / Blog link -->
-			<footer class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
-				<a
-					href="/blogs"
-					class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-				>
-					<span class="bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent">
-						← Back to All Posts
-					</span>
-				</a>
+			<!-- Back to all posts -->
+			<footer class="ts-post__footer">
+				<a class="ts-post__back-link" href="/blogs">← back to all posts</a>
 			</footer>
 		</article>
 	</main>
 </BaseLayout>
+
+<style>
+	.ts-post {
+		max-width: var(--ts-maxw);
+		margin: 0 auto;
+		padding: clamp(40px, 6vw, 64px) 24px clamp(48px, 8vw, 80px);
+	}
+
+	/* Back link — mono, teal, no underline by default */
+	.ts-post__back {
+		display: inline-block;
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		font-weight: 500;
+		color: var(--ts-accent-text);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 160ms ease, border-color 160ms ease;
+	}
+	.ts-post__back:hover {
+		color: var(--ts-primary);
+		border-bottom-color: var(--ts-primary);
+		text-decoration: none;
+	}
+
+	/* Article header */
+	.ts-post__header {
+		margin-top: 28px;
+	}
+	.ts-post__title {
+		font-family: var(--ts-font-heading);
+		font-weight: 700;
+		font-size: clamp(32px, 5vw, 52px);
+		line-height: 1.12;
+		letter-spacing: -0.02em;
+		color: var(--ts-foreground);
+		margin: 0;
+	}
+	.ts-post__desc {
+		max-width: 62ch;
+		margin: 16px 0 0 0;
+		font-family: var(--ts-font-body);
+		font-size: 20px;
+		font-weight: 400;
+		line-height: 1.6;
+		color: var(--ts-muted);
+	}
+
+	/* Metadata row — left teal accent bar */
+	.ts-post__meta {
+		margin-top: 28px;
+		border-left: 3px solid var(--ts-primary);
+		padding-left: 14px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 8px;
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		color: var(--ts-muted);
+	}
+	.ts-post__meta-sep {
+		color: var(--ts-subtle);
+	}
+	.ts-post__typo {
+		color: var(--ts-accent-text);
+		text-decoration: underline;
+		text-decoration-color: oklch(62% 0.08 165 / 0.4);
+		text-underline-offset: 3px;
+		transition: color 160ms ease, text-decoration-color 160ms ease;
+	}
+	.ts-post__typo:hover {
+		color: var(--ts-primary);
+		text-decoration-color: var(--ts-primary);
+	}
+
+	/* Hero image */
+	.ts-post__hero {
+		display: flex;
+		justify-content: center;
+		margin: 24px 0;
+	}
+	.ts-post__hero img {
+		border-radius: 8px;
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* Footer back link — hairline divider */
+	.ts-post__footer {
+		margin-top: 48px;
+		padding-top: 28px;
+		border-top: 1px solid var(--ts-border-subtle);
+	}
+	.ts-post__back-link {
+		font-family: var(--ts-font-mono);
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--ts-accent-text);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 160ms ease, border-color 160ms ease;
+	}
+	.ts-post__back-link:hover {
+		color: var(--ts-primary);
+		border-bottom-color: var(--ts-primary);
+		text-decoration: none;
+	}
+
+	/* Focus visibility */
+	.ts-post__back:focus-visible,
+	.ts-post__typo:focus-visible,
+	.ts-post__back-link:focus-visible {
+		outline: 2px solid var(--ts-primary);
+		outline-offset: 3px;
+		border-radius: 3px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ts-post__back,
+		.ts-post__typo,
+		.ts-post__back-link {
+			transition-duration: 0.01ms !important;
+		}
+	}
+</style>

@@ -1,84 +1,134 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const title = "Wannes - Software Engineer";
-const description = "Building things on the web.";
+const title = "Wannes — Software Engineer / AI Architect";
+const description =
+	"Full-stack .NET engineer working across Rust, Elixir, and the modern web. Founder of Elixus, building Meshum — a unified knowledge layer for teams.";
 ---
 
 <BaseLayout title={title} description={description}>
-    <main class="flex-1 flex items-center justify-center px-6 py-12 relative overflow-hidden">
-
-        <div class="max-w-4xl w-full">
-            <!-- Hero Section -->
-            <div class="space-y-8">
-                <!-- Name with gradient -->
-                <h1 class="text-7xl md:text-9xl font-black tracking-tight bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500 bg-clip-text text-transparent animate-gradient drop-shadow-2xl" style="font-family: 'Montserrat', sans-serif; background-size: 200% 200%;">
-                    Wannes
-                </h1>
-
-                <div class="space-y-4">
-                    <!-- Role with accent -->
-                    <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
-                        <span class="inline-block px-4 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-lg">
-                            Software Engineer / AI Architect
-                        </span>
-                    </p>
-
-                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
-                        Building things on the web. Passionate about creating elegant solutions to complex problems.
-                    </p>
-                </div>
-
-                <!-- Links with hover effects -->
-                <div class="flex gap-4 pt-6 flex-wrap">
-                    <a
-                        href="/about"
-                        class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-                    >
-                        <span class="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">About</span>
-                    </a>
-                    <a
-                        href="/projects"
-                        class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-                    >
-                        <span class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-300 dark:to-purple-400 bg-clip-text text-transparent">Projects</span>
-                    </a>
-					<a
-						href="/blogs"
-						class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-					>
-						<span class="bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent">Blog</span>
-					</a>
-					<a
-						href="/claude-code"
-						class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-					>
-						<span class="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500 bg-clip-text text-transparent">Claude Code</span>
-					</a>
-					<a
-						href="https://pathfinder.dealloc.be"
-						class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-					>
-						<span class="bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent">TTRPG</span>
-					</a>
-					<a
-						href="https://www.elixus.be"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-					>
-						<span class="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">Elixus</span>
-					</a>
-                    <a
-                        href="https://github.com/dealloc"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="group px-6 py-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-lg"
-                    >
-                        <span class="bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-300 dark:to-gray-400 bg-clip-text text-transparent">GitHub</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </main>
+	<main class="hero">
+		<div class="hero__inner">
+			<h1 class="hero__name">Wannes</h1>
+			<p class="hero__role">
+				Software Engineer <span class="sep" aria-hidden="true">/</span> AI Architect
+			</p>
+			<p class="hero__tagline">
+				Full-stack .NET engineer building systems that scale. Founder of
+				<a href="https://www.elixus.be" target="_blank" rel="noopener noreferrer">Elixus</a>,
+				currently building
+				<a href="https://www.meshum.dev" target="_blank" rel="noopener noreferrer">Meshum</a>.
+			</p>
+			<hr class="gradient-rule" />
+			<nav class="hero__links" aria-label="Elsewhere">
+				<a class="link-btn" href="/claude-code">Claude Code</a>
+				<a class="link-btn" href="https://www.elixus.be" target="_blank" rel="noopener noreferrer">Elixus</a>
+				<a class="link-btn" href="https://github.com/dealloc" target="_blank" rel="noopener noreferrer">GitHub</a>
+				<a class="link-btn" href="https://pathfinder.dealloc.be" target="_blank" rel="noopener noreferrer">TTRPG</a>
+			</nav>
+		</div>
+	</main>
 </BaseLayout>
+
+<style>
+	/* Centered hero that fills the viewport below the sticky nav */
+	.hero {
+		flex: 1;
+		min-height: calc(100vh - 53px);
+		min-height: calc(100dvh - 53px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 48px 24px;
+		text-align: center;
+	}
+	.hero__inner {
+		max-width: 640px;
+		width: 100%;
+	}
+	.hero__name {
+		font-family: var(--ts-font-heading);
+		font-weight: 700;
+		font-size: clamp(56px, 13vw, 120px);
+		line-height: 1;
+		letter-spacing: -0.03em;
+		margin: 0;
+		color: var(--ts-foreground);
+	}
+	.hero__role {
+		margin: 18px 0 0 0;
+		font-size: clamp(16px, 2.2vw, 20px);
+		color: var(--ts-muted);
+		font-weight: 400;
+	}
+	.hero__role .sep {
+		color: var(--ts-primary);
+		margin: 0 10px;
+		font-weight: 600;
+	}
+	.hero__tagline {
+		margin: 20px auto 0;
+		max-width: 46ch;
+		font-size: clamp(15px, 1.8vw, 17px);
+		line-height: 1.6;
+		color: var(--ts-muted);
+		font-weight: 300;
+	}
+	.hero__tagline a {
+		color: var(--ts-accent-text);
+		text-decoration: underline;
+		text-decoration-color: oklch(62% 0.08 165 / 0.4);
+		text-underline-offset: 3px;
+		transition: color 160ms ease, text-decoration-color 160ms ease;
+	}
+	.hero__tagline a:hover {
+		color: var(--ts-primary);
+		text-decoration-color: var(--ts-primary);
+	}
+	/* Short centered gradient rule — the single brand-gradient moment */
+	.gradient-rule {
+		height: 2px;
+		width: 80px;
+		border: 0;
+		margin: 32px auto 0;
+		background: linear-gradient(90deg, var(--ts-primary), var(--ts-accent));
+		border-radius: 2px;
+	}
+	.hero__links {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 12px;
+		margin-top: 28px;
+	}
+	.link-btn {
+		display: inline-flex;
+		align-items: center;
+		padding: 9px 16px;
+		border: 1px solid var(--ts-border);
+		border-radius: 8px;
+		background: var(--ts-surface);
+		color: var(--ts-foreground);
+		font-family: var(--ts-font-mono);
+		font-size: 13px;
+		font-weight: 500;
+		text-decoration: none;
+		transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+	}
+	.link-btn:hover {
+		border-color: var(--ts-primary);
+		color: var(--ts-accent-text);
+		background: oklch(62% 0.08 165 / 0.06);
+	}
+	.link-btn:focus-visible {
+		outline: 2px solid var(--ts-primary);
+		outline-offset: 3px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*, *::before, *::after {
+			transition-duration: 0.01ms !important;
+			animation-duration: 0.01ms !important;
+		}
+	}
+</style>

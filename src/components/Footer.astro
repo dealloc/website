@@ -1,0 +1,40 @@
+---
+import { SOCIAL_LINKS } from '../consts.ts';
+const year = new Date().getFullYear();
+---
+
+<footer class="ts-foot">
+  <div class="ts-foot__inner">
+    <span>© {year} Wannes</span>
+    <div class="ts-foot__links">
+      <a href={SOCIAL_LINKS.github} rel="noopener noreferrer">GitHub</a>
+      <a href={SOCIAL_LINKS.linkedin} rel="noopener noreferrer">LinkedIn</a>
+      <a href="/rss.xml">RSS</a>
+      <a href="https://www.meshum.dev" rel="noopener noreferrer">meshum.dev</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ts-foot { border-top: 1px solid var(--ts-border-subtle); }
+  .ts-foot__inner {
+    max-width: var(--ts-maxw);
+    margin: 0 auto;
+    padding: 28px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-family: var(--ts-font-mono);
+    font-size: 12px;
+    color: var(--ts-subtle);
+  }
+  .ts-foot__links { display: flex; gap: 18px; flex-wrap: wrap; }
+  .ts-foot a {
+    color: var(--ts-accent-text);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .ts-foot a:hover { color: var(--ts-primary); }
+</style>

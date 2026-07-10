@@ -1,0 +1,84 @@
+---
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	href: string;
+	minutesRead?: string;
+}
+
+const { title, description, pubDate, href, minutesRead } = Astro.props;
+---
+
+<article class="ts-post">
+	<a href={href} class="ts-post__link">
+		<div class="ts-post__meta">
+			<FormattedDate date={pubDate} />
+			{minutesRead && (
+				<>
+					<span class="ts-post__dot" aria-hidden="true">·</span>
+					<span>{minutesRead}</span>
+				</>
+			)}
+		</div>
+		<h3 class="ts-post__title">{title}</h3>
+		<p class="ts-post__dek">{description}</p>
+		<span class="ts-post__more">read <span aria-hidden="true">→</span></span>
+	</a>
+</article>
+
+<style>
+	.ts-post {
+		border-top: 1px solid var(--ts-border-subtle);
+	}
+	.ts-post:last-child {
+		border-bottom: 1px solid var(--ts-border-subtle);
+	}
+	.ts-post__link {
+		display: block;
+		padding: 26px 0;
+		text-decoration: none;
+		color: inherit;
+		transition: transform 200ms ease;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.ts-post__link:hover { transform: translateX(6px); }
+	}
+	.ts-post__meta {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		color: var(--ts-muted);
+		margin-bottom: 10px;
+	}
+	.ts-post__dot { color: var(--ts-primary); }
+	.ts-post__title {
+		font-family: var(--ts-font-heading);
+		font-weight: 600;
+		font-size: clamp(20px, 2.4vw, 26px);
+		letter-spacing: -0.02em;
+		line-height: 1.2;
+		margin: 0 0 8px 0;
+		color: var(--ts-foreground);
+		transition: color 160ms ease;
+	}
+	.ts-post__link:hover .ts-post__title { color: var(--ts-accent-text); }
+	.ts-post__dek {
+		font-size: 15px;
+		line-height: 1.55;
+		color: var(--ts-muted);
+		margin: 0 0 12px 0;
+		max-width: 70ch;
+	}
+	.ts-post__more {
+		font-family: var(--ts-font-mono);
+		font-size: 12.5px;
+		color: var(--ts-accent-text);
+		transition: color 160ms ease;
+	}
+	.ts-post__link:hover .ts-post__more { color: var(--ts-primary); }
+</style>
