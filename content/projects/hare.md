@@ -2,7 +2,7 @@
 title: 'Hare'
 description: 'An opinionated, simple and fast AMQP message bus library'
 startDate: 2026-01-13
-status: active
+status: completed
 technologies: ['C#', '.NET 10', 'Native AOT', 'AMQP']
 tags: ['Open Source', 'MIT License']
 githubUrl: 'https://github.com/dealloc/hare'

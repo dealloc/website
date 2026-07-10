@@ -2,9 +2,10 @@
 title: 'ufpm'
 description: 'An unofficial CLI package manager for FoundryVTT, written in Rust. Fast, transparent, parallelized where possible, transactional where it matters, and resilient against failures.'
 startDate: 2026-05-15
-status: active
+status: completed
 technologies: ['Rust']
 githubUrl: 'https://github.com/dealloc/ufpm'
+sponsorUrl: 'https://github.com/sponsors/dealloc'
 ---
 
 # ufpm: A Package Manager for FoundryVTT That Actually Behaves

@@ -9,7 +9,7 @@ export const SOCIAL_LINKS = {
 
 export const AUTHOR = {
   name: 'Wannes',
-  bio: 'Full-stack .NET engineer with a passion for building scalable systems. Founder of Elixus, currently building Meshum—a unified knowledge layer for software teams.',
+  bio: 'Full-stack .NET engineer with a passion for building scalable systems. Founder of Elixus, currently building Meshum—the control plane for how organizations see, manage, and govern their AI usage.',
   company: 'Elixus',
   companyUrl: 'https://www.elixus.be',
 };

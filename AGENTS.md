@@ -28,7 +28,7 @@
 ### Brand Positioning
 - **Who:** Wannes - Full-stack .NET engineer with expertise in Rust, Elixir, and modern web technologies
 - **Company:** Elixus (https://www.elixus.be)
-- **Product:** Meshum (https://www.meshum.dev) - Unified knowledge layer for teams
+- **Product:** Meshum (https://www.meshum.dev) - Centralized platform to see, manage, and govern how an organization's people use AI (MCP tooling, skills, agents, telemetry, across any vendor)
 - **Value Proposition:** Technical expertise, thought leadership, innovative solutions
 
 ### Primary Goals
@@ -480,7 +480,7 @@ export const collections = { blog, projects };
 ```markdown
 ---
 name: Meshum
-description: Unified knowledge layer where teams keep using their tools—everything becomes searchable through AI agents
+description: Centralized control plane for enterprise AI usage—see, manage, and govern MCP tooling, skills, and agents across any vendor
 heroImage: /images/meshum-hero.png
 techStack: [".NET", "TypeScript", "PostgreSQL", "Redis", "OpenAI"]
 link: https://www.meshum.dev
@@ -607,7 +607,7 @@ export const SOCIAL_LINKS = {
 
 export const AUTHOR = {
   name: 'Wannes',
-  bio: 'Full-stack .NET engineer with a passion for building scalable systems. Founder of Elixus, currently building Meshum—a unified knowledge layer for software teams.',
+  bio: 'Full-stack .NET engineer with a passion for building scalable systems. Founder of Elixus, currently building Meshum—the control plane for how organizations see, manage, and govern their AI usage.',
   company: 'Elixus',
   companyUrl: 'https://www.elixus.be',
 };
