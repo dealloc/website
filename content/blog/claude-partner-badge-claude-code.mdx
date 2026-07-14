@@ -1,0 +1,139 @@
+---
+title: 'Getting the Claude Partner Badge: Claude Code'
+description: "What the Claude Partner Badge: Claude Code path actually covers — it's not a 'how to use Claude Code' course, it's the operational playbook for rolling it out to an enterprise."
+pubDate: 2026-07-14
+heroImage: '../../src/assets/blogs/claude-partner-badge-claude-code/claude-partner-badge-claude-code.png'
+---
+
+Anthropic launched Partner Badges alongside the restructured certification catalog I wrote about [in my last post](/blog/claude-certifications-ccar-p) — delivery-readiness paths that sit next to the CCAO/CCDV/CCAR certifications. The first one out is the [Claude Partner Badge: Claude Code](https://anthropic-partners.skilljar.com/path/partner-badge-claude-code), and since it's free, self-paced, and lines up closely with the client work I already do, it was the obvious one to start with.
+
+The name is a bit misleading. If you're expecting a course on *using* Claude Code — prompting well, structuring a CLAUDE.md, writing your first hook — that's maybe a third of it. The rest is the part nobody puts in the title: how a consultant plans, deploys, secures, and measures a Claude Code rollout across an entire organization. Here's what surprised me, what's actually in it, and who I'd point at it.
+
+---
+
+## What actually surprised me
+
+The biggest surprise was how much of the material was about people, not configuration. Following up on stagnation once initial excitement wears off. Picking the right team for a pilot instead of just the loudest volunteers. Defining what "success" even means before you start, and guarding the scope of a pilot so it doesn't quietly become an open-ended rollout. Choosing and mentoring "champions" who keep momentum going after the consultant leaves. None of that is Claude-specific — it's classic change management — but seeing it paired directly with the technical rollout made it click why it's in a *technical* badge at all: a technically perfect deployment that nobody adopts is still a failed engagement.
+
+The other thing worth calling out explicitly: **"Admin" in Claude Enterprise isn't as powerful as the name implies.** Role permissions are more granular than the label suggests, and assuming an Admin seat gives someone unrestricted control is exactly the kind of assumption that causes a Day 1 surprise. It's a small thing, but it's the sort of gotcha that's cheap to know in advance and expensive to discover during a client kickoff.
+
+With that framing in mind, here's what the path actually walks you through to get there.
+
+---
+
+## It's eight courses, a capstone, and a final assessment
+
+The path is organized around the actual stages of a client engagement, not around Claude Code features. Each course has its own lesson count; here's what's actually inside each one.
+
+<div class="not-prose my-8 space-y-3">
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">1. Product Foundations</span>
+			<span class="text-xs text-gray-500">3 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">What Claude Code is and how it behaves in a codebase, picking between Haiku/Sonnet/Opus, and the platform options at a glance — Enterprise, API, and the deployment paths.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">2. Installation and Environments</span>
+			<span class="text-xs text-gray-500">5 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">CLI install and prerequisites across OS/platforms, VS Code and JetBrains integrations, terminal and shell setup, dev containers and sandboxed execution, headless/non-interactive mode for CI.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">3. Deployment Architecture</span>
+			<span class="text-xs text-gray-500">5 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">The deployment decision framework, feature parity gaps and flags between paths, corporate proxy configuration, the LLM gateway pattern, and data residency / ZDR eligibility.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">4. Configuration and Customization</span>
+			<span class="text-xs text-gray-500">5 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">The configuration hierarchy and precedence order, CLAUDE.md at company-wide vs. repo-specific scope, settings.json vs. settings.local.json conventions, custom slash commands, output styles.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">5. Extensibility</span>
+			<span class="text-xs text-gray-500">8 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">MCP servers for ticketing/error logs/internal systems, approved-server governance and the MCP allowlist, the MCP tunnel for bridging local development, Skills (authoring and packaging reusable task expertise), hooks across the pre-task/post-edit/on-failure/on-completion lifecycle, subagents and parallel orchestration, plugin marketplaces and dependency versioning.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">6. Security and Governance</span>
+			<span class="text-xs text-gray-500">6 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">managed-settings.json (forced login, allow/deny MCP, hooks restrictions), the permission system and operation gating, sandboxed bash execution and filesystem scoping, SSO (SAML, OIDC)/SCIM/IP allowlisting, ZDR and custom retention policy, SOC 2 Type II and HIPAA mapping.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">7. Administration and Measurement</span>
+			<span class="text-xs text-gray-500">6 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">Seat management and the admin console, the Analytics API for usage/adoption, the Compliance API for audit and oversight, OpenTelemetry pipeline setup, audit log querying, cost monitoring/attribution/spend controls.</p>
+	</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">8. Delivery Methodology</span>
+			<span class="text-xs text-gray-500">7 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">Use case identification and qualification, pilot design, ROI measurement, phased rollout and change management, champion enablement and internal documentation, preempting common failure modes, a 30-day Claude Code activation timeline.</p>
+	</div>
+	<div class="rounded-xl border border-teal-200 dark:border-teal-900/60 p-5 bg-teal-50/40 dark:bg-teal-950/10">
+		<div class="flex items-center justify-between mb-2">
+			<span class="font-bold text-gray-900 dark:text-gray-100">Capstone</span>
+			<span class="text-xs text-gray-500">4 lessons</span>
+		</div>
+		<p class="text-sm text-gray-600 dark:text-gray-400 m-0">A multi-file refactor exercise, a test generation and debugging exercise, CI/CD integration via GitHub Actions, and troubleshooting playbook scenarios — you submit actual code, a decision log, and a metrics snapshot.</p>
+	</div>
+</div>
+
+Then a final scenario-based assessment closes it out. A quick note on what I can and can't share here: like with the CCAR-F/P exam guides, the specific questions and answer choices are confidential — what follows is the shape of the exam and the topics it draws on, not its contents.
+
+---
+
+## The exam: 34 questions, no visible clock, free, four attempts
+
+The assessment is **34 scenario-based questions**, each one rooted in a real client decision — the kind of thing you'd actually have to call on an engagement, not textbook trivia. It's **free**, and you get **up to four attempts a year** if you don't clear it first try. Oddly, I never saw a stated time limit on the exam page itself, and there's no prominent countdown once you start — time pressure isn't the challenge here. I also didn't note the minimum passing score at the time and it isn't shown again afterward — so take a screenshot of that screen if it matters to you.
+
+That's a much lighter bar than CCAR-F or CCAR-P, which are proctored, timed, and cost real money. The badge trades exam rigor for making you build actual artifacts across eight courses and a capstone first — the assessment is really just confirming you retained it.
+
+---
+
+## Reporting up vs. reporting sideways
+
+One distinction from the Delivery Methodology course stuck with me: the same rollout produces two genuinely different stories depending on who's in the room, and conflating them is a quiet way to lose credibility with one audience or the other.
+
+<div class="not-prose my-8 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+	<div class="grid grid-cols-2 text-sm">
+		<div class="bg-gray-50 dark:bg-gray-900 p-4 font-bold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-800">To technical teams</div>
+		<div class="bg-gray-50 dark:bg-gray-900 p-4 font-bold text-gray-900 dark:text-gray-100 border-b border-l border-gray-200 dark:border-gray-800">To management / shareholders</div>
+
+		<div class="p-4 text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-800">"PR lead time went down 34%"</div>
+		<div class="p-4 text-gray-700 dark:text-gray-300 border-b border-l border-gray-200 dark:border-gray-800">"Features ship 2x faster"</div>
+
+		<div class="p-4 text-gray-700 dark:text-gray-300">Precise, verifiable, engineering-native metric</div>
+		<div class="p-4 text-gray-700 dark:text-gray-300 border-l border-gray-200 dark:border-gray-800">Business-outcome framing the same fact supports</div>
+	</div>
+</div>
+
+Neither version is dishonest — they're the same underlying number translated for what the audience actually needs to decide. A tech lead wants the metric they can verify against their own dashboards; an executive wants to know what it means for delivery commitments. The course spends real time on which metrics matter to which audience — including which ones shareholders actually care about, which isn't always the ones engineers reach for first — and that framing alone made me think differently about how I'd report on a pilot.
+
+---
+
+## Was the capstone worth doing?
+
+The capstone asks for real output: a multi-file refactor, generated tests against a debugging scenario, a working CI/CD pipeline via GitHub Actions, and a walk through troubleshooting playbook scenarios — code, a decision log, and a metrics snapshot, not a quiz. How much of a lift that is depends on where you're coming from: the technical courses overlap heavily with what CCAR-F already covers, so if you hold that credential or use Claude Code daily, expect the refactor/test/CI exercises to move fast. The genuinely new ground, for me, was the governance and compliance material — not complex if you sit down and actually read it, but new enough that I wouldn't have been able to speak to it confidently before.
+
+---
+
+## Who I'd point at this
+
+If you do any client-facing Claude Code work, the configuration and extensibility courses alone are worth the time — CLAUDE.md hierarchy, settings precedence, MCP governance, hooks, all the stuff you'll get asked about eventually. If you're the person who actually plans or manages an AI rollout inside a company — picking pilots, reporting to stakeholders, setting up telemetry — the governance, administration, and delivery methodology courses are the real payoff.
+
+I don't run enterprise rollouts myself day to day. But having gone through this, I can now advise and support a client who's mid-rollout, or one who's already deployed Claude Code and wants to tighten or harden their setup, with a lot more confidence than before. That's the actual value of the badge: not a credential to wave around ([though I did add it to my about page](/about)), but a working vocabulary for a part of the job I'd only seen from the outside.
+
+If you're anywhere near this kind of work, it costs you nothing but time to find out the same thing.
