@@ -10,7 +10,11 @@ export async function GET(context) {
 		site: context.site,
 		items: posts.map((post) => ({
 			...post.data,
-			link: `/blogs/${post.id}/`,
+			link: `/posts/${post.id}/`,
+			// @astrojs/rss derives <guid> from `link`, so the /blogs -> /posts
+			// move would change every guid and make feed readers re-surface
+			// every post as new. Pin a stable, path-independent guid instead.
+			customData: `<guid isPermaLink="false">${post.id}</guid>`,
 		})),
 	});
 }
