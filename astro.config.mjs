@@ -10,7 +10,7 @@ import {remarkReadingTime} from './plugins/remark-reading-time.js';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	site: 'https://dealloc.be',
 	integrations: [mdx(), sitemap()],
 
 	vite: {
