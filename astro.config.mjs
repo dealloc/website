@@ -13,6 +13,13 @@ export default defineConfig({
 	site: 'https://dealloc.be',
 	integrations: [mdx(), sitemap()],
 
+	// Posts moved from /blogs/ to /posts/. Keep the old URLs working: on a
+	// static build Astro emits meta-refresh stubs with a canonical link.
+	redirects: {
+		'/blogs': '/posts',
+		'/blogs/[...slug]': '/posts/[...slug]',
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 	},
